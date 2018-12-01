@@ -8,7 +8,10 @@ typedef ponto *Ponto;
 Ponto inserePonto(Ponto lista, Ponto novo){
     /* Insere o ponto na lista de pontos ordenado
     por distância */
-    if(lista == NULL) return novo;
+    if(lista == NULL){
+        novo->prox = NULL;
+        return novo;
+    }
     if(lista->dist > novo->dist){
         novo->prox = lista;
         return novo;
