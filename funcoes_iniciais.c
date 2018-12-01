@@ -52,7 +52,8 @@ Ponto mapearPontos(Grid *G, Position eu, Robot *R){
 
 Position searchNearestRobot(Grid *g, Position p) {
     /* Essa função foi bastante inspirada pela função searchNearestControl,
-    do controller_basic.c */
+    do controller_basic.c
+    LEVAR EM CONTA AS RODADAS ATÉ CHEGAR */
 	int i, min = 500, dist;
     Position best_bot;
 	for(i = 0; i < 6; i++) {
