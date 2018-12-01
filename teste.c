@@ -67,7 +67,7 @@ Action fastTurn(int ini, int end) {
 	if((dif <= 3 && dif >= 0) || (dif <= -3))
 		return TURN_RIGHT;
 	else
-		return TURN_LEFT;		
+		return TURN_LEFT;
 }
 
 /*Escolha uma direcao validao aleatoria. Se
@@ -135,18 +135,9 @@ int quickTurn(int ini, int end) {
 	return j;
 }
 
-/*Dada uma direcao inicial e uma direcao final, ve
-para qual lado virando eh mais rapido de se chegar*/
-Action fastTurn(int ini, int end) {
-	int dif = end-ini;
-	if((dif <= 3 && dif >= 0) || (dif <= -3))
-		return TURN_RIGHT;
-	else
-		return TURN_LEFT;		
-}
 
 int isControlPoint(Grid *g, Position p) {
-	return (g->map[p.x][p.y].isControlPoint);	
+	return (g->map[p.x][p.y].isControlPoint);
 }
 /*Dado uma posicao, checa se para alguma direcao
 existe um control point, e retorna qual direcao esta
@@ -174,7 +165,7 @@ int searchNearestControl(Grid *g, Position p, Robot *r) {
 	/*Nao existe control points no mapa*/
 	if (min == 500)
 		return -1;
-	
+
 	else
 		return best_dir;
 }
@@ -186,16 +177,16 @@ Action andar(Grid *g, Position p, Position robo)
 	Tile bloco;
 	Position pos, linha;
 	Direction ida, volta;
-	d=0;
+	d=0;  //  tem que acessar a direção 0 ou a direção do robô
 	pos = getNeighbor(p,d);
 	bloco = g->map[pos->x][pos->y];
 	int cont=0, m->pos-x, n=pos->y;
-	
-	
+
+
 	/* checa os vizinhos da casa que vc pretende ir*/
-	while(ida=0, volta=0;ida<=5, volta<=5; ida++, volta++)
+	while(ida=0, volta=0;ida<=5, volta<=5; ida++, volta++)  //  virgula funciona ou tem que ser &&? Ou é um for?
 	{
-		if(bloco-> TileType == "PROJECTILE")
+		if(bloco-> TileType == "PROJECTILE")  //  tem que acessar X->type ou X->TileType?
 		{
 			volta=bloco->object->dir;
 			if(volta - ida == 3 || volta-ida==-3)
@@ -206,15 +197,15 @@ Action andar(Grid *g, Position p, Position robo)
 					if((g->map[pos->x][pos->y])->TileType == "PROJECTILE") cont++;
 					linha=getNeighbor(linha, ida);
 				}
-					
+
 				robo=getNeighbor(linha,volta);
-				if((g->map[robo.x][robo.y])->object->bullets > cont) 
+				if((g->map[robo.x][robo.y])->object->bullets > cont)
 				{
 					if((g->map[robo.x][robo.y])->object->dir ==2) return SHOOT_RIGHT;
 					if((g->map[robo.x][robo.y])->object->dir ==1) return SHOOT_LEFT;
 
 				}
-				
+
 			}
 			return TURN_LEFT;
 		}
@@ -225,11 +216,11 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	int i, j;
 	Position s;
 	Robot *r = &g->map[p.x][p.y].object.robot;
-	
+
 	/*Se estiver em cima de um control point, SCORE TIME*/
 	if(isControlPoint(g,p))
 		return STAND;
-	
+
 	else {
 		/*procura algum control point em alguam direcao do robo*/
 		control_dir = searchNearestControl(g, p, r);
@@ -260,5 +251,3 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 		}
 	}
 }
-
-
