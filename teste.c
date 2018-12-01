@@ -179,6 +179,48 @@ int searchNearestControl(Grid *g, Position p, Robot *r) {
 		return best_dir;
 }
 
+
+/* checa se vc consegue andar pra casa desejada sem levar um tiro */
+Action andar(Grid *g, Position p, Position robo)
+{
+	Tile bloco;
+	Position pos, linha;
+	Direction ida, volta;
+	d=0;
+	pos = getNeighbor(p,d);
+	bloco = g->map[pos->x][pos->y];
+	int cont=0, m->pos-x, n=pos->y;
+	
+	
+	/* checa os vizinhos da casa que vc pretende ir*/
+	while(ida=0, volta=0;ida<=5, volta<=5; ida++, volta++)
+	{
+		if(bloco-> TileType == "PROJECTILE")
+		{
+			volta=bloco->object->dir;
+			if(volta - ida == 3 || volta-ida==-3)
+			{
+				linha=pos;
+				while(valid(linha, m, n, g))
+				{
+					if((g->map[pos->x][pos->y])->TileType == "PROJECTILE") cont++;
+					linha=getNeighbor(linha, ida);
+				}
+					
+				robo=getNeighbor(linha,volta);
+				if((g->map[robo.x][robo.y])->object->bullets > cont) 
+				{
+					if((g->map[robo.x][robo.y])->object->dir ==2) return SHOOT_RIGHT;
+					if((g->map[robo.x][robo.y])->object->dir ==1) return SHOOT_LEFT;
+
+				}
+				
+			}
+			return TURN_LEFT;
+		}
+	}
+}
+
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	int i, j;
 	Position s;
@@ -219,17 +261,4 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	}
 }
 
-/*Simples e concisa, Billy so precisa correr para viver*/
-Action processTurn(Grid *g, Position p, int turnsLeft) {
-	Robot *r = &g->map[p.x][p.y].object.robot;
-	
-	return run(g, p, r);
-}
 
-/*Com apenas um pensamento, Jill entra no campo de batalha:
-só poder haver um campeão*/
-Action processTurn(Grid *g, Position p, int turnsLeft) {
-	Robot *r = &g->map[p.x][p.y].object.robot;
-	
-	return shootTime(g, p, r);
-}
