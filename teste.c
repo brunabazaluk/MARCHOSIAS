@@ -60,15 +60,6 @@ Action shootTime(Grid *g, Position p, Robot *r) {
 static int turn_dir = -1;
 
 
-/*Dada uma direcao inicial e uma direcao final, ve
-para qual lado virando eh mais rapido de se chegar*/
-Action fastTurn(int ini, int end) {
-	int dif = end-ini;
-	if((dif <= 3 && dif >= 0) || (dif <= -3))
-		return TURN_RIGHT;
-	else
-		return TURN_LEFT;
-}
 
 /*Escolha uma direcao validao aleatoria. Se
 apos 20 tentativas nao encontrar nenhuma, manda ficar
@@ -135,6 +126,15 @@ int quickTurn(int ini, int end) {
 	return j;
 }
 
+/*Dada uma direcao inicial e uma direcao final, ve
+para qual lado virando eh mais rapido de se chegar*/
+Action fastTurn(int ini, int end) {
+	int dif = end-ini;
+	if((dif <= 3 && dif >= 0) || (dif <= -3))
+		return TURN_RIGHT;
+	else
+		return TURN_LEFT;
+}
 
 int isControlPoint(Grid *g, Position p) {
 	return (g->map[p.x][p.y].isControlPoint);
@@ -177,16 +177,16 @@ Action andar(Grid *g, Position p, Position robo)
 	Tile bloco;
 	Position pos, linha;
 	Direction ida, volta;
-	d=0;  //  tem que acessar a direção 0 ou a direção do robô
+	int d = 0;
 	pos = getNeighbor(p,d);
 	bloco = g->map[pos->x][pos->y];
 	int cont=0, m->pos-x, n=pos->y;
 
 
-	/* checa os vizinhos da casa que vc pretende ir*/
-	while(ida=0, volta=0;ida<=5, volta<=5; ida++, volta++)  //  virgula funciona ou tem que ser &&? Ou é um for?
+	/* checa os vizinhos da casa que vc pretende ir */
+	for(ida=0, volta=0; ida<=5 && volta<=5; ida++, volta++)
 	{
-		if(bloco-> TileType == "PROJECTILE")  //  tem que acessar X->type ou X->TileType?
+		if(bloco->type == "PROJECTILE")
 		{
 			volta=bloco->object->dir;
 			if(volta - ida == 3 || volta-ida==-3)
@@ -194,7 +194,7 @@ Action andar(Grid *g, Position p, Position robo)
 				linha=pos;
 				while(valid(linha, m, n, g))
 				{
-					if((g->map[pos->x][pos->y])->TileType == "PROJECTILE") cont++;
+					if((g->map[pos->x][pos->y])->type == "PROJECTILE") cont++;  //  pos ou linha?
 					linha=getNeighbor(linha, ida);
 				}
 
