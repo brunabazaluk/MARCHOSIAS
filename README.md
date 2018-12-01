@@ -1,4 +1,5 @@
-Proposta para modos de comportamento da IA:
+#####MARCHOSIAS
+
 	observacoes importantes:
 		-para pontuar em um ponto de controle eh necessario
 		 realizar acao NENHUMA no turno;
@@ -19,6 +20,8 @@ Proposta para modos de comportamento da IA:
 		
 		-nao eh permitido 'trapacear' -> as variaveis recebidas pelas nossas
 		funcoes devem apenas ser lidas
+
+#####Proposta para modos de comportamento da IA:
 
 	MODO VAI PARA PONTO DE CONTROLE:
 		1. Verifica qual o ponto de controle mais proximo de vc
@@ -43,4 +46,5 @@ Proposta para modos de comportamento da IA:
 		   que o nome de balas do jogador alvo;
 
 Colaboradores: (assinem ai)
--Tsu
+* Tsu
+* Gustavo
