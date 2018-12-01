@@ -23,13 +23,15 @@ Ponto inserePonto(Ponto lista, Ponto novo){
 }
 
 
-Ponto mapearPontos(Grid *G, Position eu){
+Ponto mapearPontos(Grid *G, Position eu, Robot *R){
     /* Varre a grid hexagonal olhando as casas em cada direção
     do demônio e cria uma lista com todos os pontos de controle
-    por ordem de distância */
+    por ordem de distância.
+    Essa função foi bastante inspirada pela função searchNearestControl,
+    do controller_basic.c */
     Ponto controles = NULL;
     for(int i = 0; i < 6; i++){
-        int dist = i + 1;
+        int dist = 1 + quickTurn(R->dir, i);
         Position pos = getNeighbor(eu, i);
         while(valid(pos, G->m, G->n, G)){
             if(isControlPoint(G, pos)){
