@@ -1,7 +1,7 @@
 typedef struct lis{
     Position pos;
     int dist;
-    lis *prox;
+    struct lis *prox;
 } ponto;
 typedef ponto *Ponto;
 
