@@ -49,3 +49,32 @@ Ponto mapearPontos(Grid *G, Position eu, Robot *R){
     }
     return Ponto;
 }
+
+Position searchNearestRobot(Grid *g, Position p) {
+    /* Essa função foi bastante inspirada pela função searchNearestControl,
+    do controller_basic.c */
+	int i, min = 500, dist;
+    Position best_bot;
+	for(i = 0; i < 6; i++) {
+		dist = 1;
+		Position s = getNeighbor(p,i);
+		while(valid(s, g->m, g->n, g)) {
+			if(s->type == ROBOT) {  // vou ter que usar strcmp???
+				if(dist < min) {
+					min = dist;
+					best_bot = s;
+					break;
+				}
+			}
+			dist++;
+			s = getNeighbor(s, i);
+		}
+	}
+
+	/* Nao existe bot perto (impossivel??) */
+	if (min == 500)
+		return -1;
+
+	else
+		return best_bot;
+}
