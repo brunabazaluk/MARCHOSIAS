@@ -30,7 +30,12 @@ funcoes devem apenas ser lidas
 3. Segue pela melhor rota caso nao colida com nada no passo
    seguinte (tiros / robos);
 4. Caso haja colisao diferente de barreira por tras: _**coloca uma barreira**_
-5. Caso haja colisao com tiro pela frente: _**atira**_
+5. Caso haja colisao com tiro pela frente: 
+	_**atira** sse numero de tiros pela frente + numero de balas do
+	atirador for menor ou igual que nosso total de balas.
+	_**vira para direita ou esquerda e anda**_ caso contrario
+
+
 
 ##### MODO NO PONTO DE CONTROLE:
 1. Fica parado
@@ -40,7 +45,7 @@ funcoes devem apenas ser lidas
 ##### MODO COMBATE:
 1. Procura um robo numa linha reta em relacao a posicao atual;
 2. Atira nessa direcao se nosso numero de balas for maior ou igual
-   que o nome de balas do jogador alvo;
+   que o numero de balas do jogador alvo;
 
 #### Colaboradores: (assinem ai)
 * Tsu
