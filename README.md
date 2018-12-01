@@ -16,7 +16,9 @@ Proposta para modos de comportamento da IA:
 		-o jogo crasha se tentarmos inicializa-lo com mais de 4 jogadores
 		 [provavelmente pq na main existe um vetor com exatamente 4 cores
 		 qdo o jogo tenta acessar a quinta cor, ele crasha]
-
+		
+		-nao eh permitido 'trapacear' -> as variaveis recebidas pelas nossas
+		funcoes devem apenas ser lidas
 
 Colaboradores: (assinem ai)
 -Tsu
