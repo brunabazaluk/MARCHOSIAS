@@ -1,18 +1,26 @@
+//////////////////////////////////////////////////////////////////////////////////
 /* Este programa foi escrito por: Bruna Bazaluk, Gustavo Bastos e Rafael Tsuha. */
 /* Utilizamos algumas funcoes ja existentes de Yan Couto e Ricardo Fonseca.     */
 /* As funcoes escritas por eles sao as seguintes: 				*/
-/* int valid; int isControlPoint; int quickTurn; int fastTurn; POE O RESTO AQUI DEPOIS NAO ESQUECE*/
-/**/
+/* int valid; int isControlPoint; int quickTurn; int fastTurn.                  */
+//////////////////////////////////////////////////////////////////////////////////
+/*
 
+8b    d8        db        88""Yb      dP""b8     88  88      dP"Yb      .dP"Y8     88        db            .dP"Y8 
+88b  d88       dPYb       88__dP     dP   `"     88  88     dP   Yb     `Ybo."     88       dPYb           `Ybo." 
+88YbdP88      dP__Yb      88"Yb      Yb          888888     Yb   dP     o.`Y8b     88      dP__Yb          o.`Y8b 
+88 YY 88     dP""""Yb     88  Yb      YboodP     88  88      YbodP      8bodP'     88     dP""""Yb         8bodP' 
+
+*/
 ///////////////////////////////////////////////////////////////////////////////////
-/* Marchosias eh um marques do inferno, um demonio com 31 legioes em seu comando. */
+/* Marchosias eh um marques do inferno, um demonio com 31 legioes em seu comando.*/
 /* Nao espere que esse demonio tenha piedade do seu robo. 			 */
-/* Marchocias magnus Marchio est. Se ostentat specie lupae ferocissimae cum alis  */
-/* gryphi, cauda serpentina, & ex ore nescio quid evomens. Quum hominis imaginem  */
-/* induit, pugnator est optimus. Ad quaesita vere respondet: fidelis in cunctis   */
+/* Marchocias magnus Marchio est. Se ostentat specie lupae ferocissimae cum alis */
+/* gryphi, cauda serpentina, & ex ore nescio quid evomens. Quum hominis imaginem */
+/* induit, pugnator est optimus. Ad quaesita vere respondet: fidelis in cunctis  */
 /* exorcistae mandatis. Fuit ordinis Dominationum. Huic subjacent legiones 	 */
-/* triginta. Sperat se post mille ducentos annos ad septimum Thronum reversurum:  */
-/* sed ea spe falsus est.*/
+/* triginta. Sperat se post mille ducentos annos ad septimum Thronum reversurum: */
+/* sed ea spe falsus est.							 */
 ///////////////////////////////////////////////////////////////////////////////////
 
 
