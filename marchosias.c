@@ -59,6 +59,7 @@ Action fastTurn(int ini, int end) {
 	return TURN_LEFT;
 }
 
+<<<<<<< HEAD
 int distanciaEmTurnos (Grid *g, Posicao partida, Posicao chegada, Robo *r) {
 /*devolve o tempo em turnos necessario para partir a posicao chegada e 
   ir ate a posicao partida, ignorando possiveis obstaculos*/
@@ -81,15 +82,21 @@ int distanciaEmTurnos (Grid *g, Posicao partida, Posicao chegada, Robo *r) {
 	
 }
 
-Ponto inserePonto(Ponto lista, Ponto novo){
+Ponto inserePonto(Ponto lista, Position p, int dist){
     /* Insere o ponto na lista de pontos ordenado
     por distância */
+	Ponto novo = malloc(sizeof(ponto));
+	novo->pos = p; novo->dist = dist;
     if(lista == NULL){
         novo->prox = NULL;
         return novo;
     }
     if(lista->dist > novo->dist){
-        novo->prox = lista;
+		Ponto aux = malloc(sizeof(ponto));
+		aux->pos = lista->pos;
+		aux->dist = lista->dist;
+		aux->prox = lista->prox;
+        novo->prox = aux;
         return novo;
     }
     Ponto aux = lista;
@@ -101,27 +108,22 @@ Ponto inserePonto(Ponto lista, Ponto novo){
     return lista;
 }
 
-
 Ponto mapearPontos(Grid *g, Position eu, Robot *r){
     /* Varre a grid hexagonal olhando as casas em cada direção
     do demônio e cria uma lista com todos os pontos de controle
     por ordem de distância.
     Essa função foi bastante inspirada pela função searchNearestControl,
     do controller_basic.c */
+	int dist;
     Ponto controles = NULL;
-    for(int i = 0; i < 6; i++){
-        int dist = 1 + quickTurn(r->dir, i);
-        Position pos = getNeighbor(eu, i);
-        while(valid(pos, g->m, g->n, g)){
-            if(isControlPoint(g, pos)){
-                Ponto aux = malloc(sizeof(ponto));
-                aux->pos = pos;
-                aux->dist = dist;
-                controles = inserePonto(controles, aux);
-            }
-            dist++;
-            pos = getNeighbor(pos, i);
-        }
+    for(int i = 0; i < g->m; i++){
+		for(int j = 0; j < g->n; j++){
+			Position p; p.x = i; p.y = j;
+			if(isControlPoint(g, p)){
+				dist = distanciaEmTurnos(g, eu, p, r);
+				controles = inserePonto(controles, p, dist);
+			}
+		}
     }
     return controles;
 }
@@ -134,36 +136,45 @@ Position searchNearestRobot(Grid *g, Position p) {
 	for(i = 0; i < 6; i++) {  //  checa na direção de cada lado o hexágono por vez
 		dist = 1;  //  como o ponto de controle
 		Position s = getNeighbor(p,i);
-		while(valid(s, g->m, g->n, g)) {
+		while((s.x >= 0 && s.x < g->m) && (s.y >= 0 && s.y < g->n)) {
 			if(g->map[s.x][s.y].type == ROBOT) {
 				if(dist < min) {
-					min = dist + quickTurn(g->map[s.x][s.y].object.robot.dir, (i-3)%6);  // leva em conta o número de vezes que o robo terá que virar;
+					int direc = i-3;
+					if(i-3 < 0) direc += 6;
+					min = dist + quickTurn(g->map[s.x][s.y].object.robot.dir, direc);  // leva em conta o número de vezes que o robo terá que virar;
 					best_bot = s;
-					//break;  // precisa continuar procurando na linha, pois pode ter outro bot que precise girar menos
+					break;
 				}
 			}
 			dist++;
 			s = getNeighbor(s, i);
 		}
 	}
-
 	return best_bot;
 }
 
 int marchosias_modo;
 void prepareGame(Grid *g, Position p, int turnCount){
-	/* A ideia nessa função é:
+	/*
+	A ideia nessa função é:
 	 	1. Mapear os pontos de controle do mapa por ordem de proximidade;
 		2. Verificar se você é o robô mais próximo de algum deles;
 		3. Se for:
 			3.1. Mandar o sinal de correr até o ponto;
 		4. Se não for:
-			4.1. Mandar o sinal de ativar o modo de combate; */
+			4.1. Mandar o sinal de ativar o modo de combate;
+	*/
+
 	setName("MARCHOSIAS");
 	Ponto controlPoints = mapearPontos(g, p, &g->map[p.x][p.y].object.robot);
+
 	Ponto checador = controlPoints;
-	while(checador != NULL && (p.x != searchNearestRobot(g, checador->pos).x || p.y != searchNearestRobot(g, checador->pos).y))
+	Position robo_prox = searchNearestRobot(g, checador->pos);
+	while(checador != NULL && (p.x != robo_prox.x || p.y != robo_prox.y)){
 		checador = checador->prox;
+		if(checador == NULL) break;
+		robo_prox = searchNearestRobot(g, checador->pos);
+	}
 	if(checador == NULL) marchosias_modo = 0; // MODO DE COMBATE
 	else marchosias_modo = 1; // MODO DE CONTROLE
 }
