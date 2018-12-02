@@ -362,16 +362,17 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	*/
 	Position pos = getNeighbor (myPos, d);
 	int tempo = 0;
+	int oposta = d - 3;
+	if(oposta < 0) oposta += 6;
 
-	while (pos.x >= 0 && pos.x < g->m && pos.y >= 0 && pos.y < g->n && g->map[pos.x][pos.y].type != ROBOT) {
-		printf("TA NO WHILE\n");
+	while ((pos.x >= 0 && pos.x < g->m && pos.y >= 0 && pos.y < g->n) && g->map[pos.x][pos.y].type != ROBOT) {
 		if (g->map[pos.x][pos.y].type == PROJECTILE) {
-			if (g->map[pos.x][pos.y].object.projectile.dir == (d+3)%6) {
+			if (g->map[pos.x][pos.y].object.projectile.dir == oposta) {
 			//direcao oposta a d
-				tempo += 1;
+				tempo++;
 			}
 		}
-		pos = getNeighbor (myPos, d);
+		pos = getNeighbor (pos, d);
 	}
 	return tempo;
 }
@@ -384,7 +385,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	if(marchosias_modo == 1){ // MODO DE CONTROLE
 		/* SE ESTIVER NO PONTO DE CONTROLE */
 		if(isControlPoint(g,p)) {
-			for (Direction d1 = 0; d1 < 6; d1++) {
+			for (int d1 = 0; d1 < 6; d1++) {
 				if (taVindoTiro(g, p, d1)) {
 					if (d1 == ((r->dir)+2)%6 && taVindoTiro(g, p, d1) == 1) {
 						return OBSTACLE_RIGHT;
