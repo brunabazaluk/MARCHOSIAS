@@ -374,21 +374,30 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	Position s;
 	Robot *r = &g->map[p.x][p.y].object.robot;
 
-	/*Se estiver em cima de um control point, SCORE TIME*/
+	/*define o comportamento apos chegar em um ponto de controle*/
 	if(isControlPoint(g,p)) {
-		// for (Direction d1 = 0; d1 < 6; d1++) {
-		// 	if (taVindoTiro(g, p, d1)) {
-		// 		if (d1 == ((r->dir)+2)%6 && taVindoTiro == 1) {
-		// 			return OBSTACLE_RIGHT;
-		// 		}
-		// 		else if (d1 == ((r->dir)+3)%6 && taVindoTiro == 1) {
-		// 			return OBSTACLE_CENTER;
-		// 		}
-		// 		else if (d1 == ((r->dir)+4)%6 && taVindoTiro == 1) {
-		// 			return OBSTACLE_LEFT;
-		// 		}
-		// 	}
-		// }
+		for (Direction d1 = 0; d1 < 6; d1++) {
+			if (taVindoTiro(g, p, d1)) {
+				if (d1 == ((r->dir)+2)%6 && taVindoTiro == 1) {
+					return OBSTACLE_RIGHT;
+				}
+				else if (d1 == (r->dir+3)%6 && taVindoTiro == 1) {
+					return OBSTACLE_CENTER;
+				}
+				else if (d1 == (r->dir+4)%6 && taVindoTiro == 1) {
+					return OBSTACLE_LEFT;
+				}
+				else if (d1 == r->dir && taVindoTiro == 1) {
+					return SHOOT_CENTER;
+				}
+				else if (d1 == (r->dir+1)%6 && taVindoTiro == 1) {
+					return SHOOT_RIGHT;
+				}
+				else if (d1 == (r->dir+5)%6 && taVindoTiro == 1) {
+					return SHOOT_LEFT;
+				}
+			}
+		}
 		return STAND;
 	}
 	else {
