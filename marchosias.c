@@ -1,6 +1,13 @@
 #include "../robot_fight.h"
 #include <stdlib.h>
 
+typedef struct lis{
+    Position pos;
+    int dist;
+    struct lis *prox;
+} ponto;
+typedef ponto *Ponto;
+
 static int move_time = 0;
 static int shoot = 1;
 static int turn = 0;
@@ -11,8 +18,95 @@ int valid(Position p, int m, int n, Grid *g) {
 	return ((p.x >= 0 && p.x < m && p.y >= 0 && p.y < n) && (g->map[p.x][p.y].type == NONE));
 }
 
-void prepareGame(Grid *g, Position p, int turnCount) {
+Ponto inserePonto(Ponto lista, Ponto novo){
+    /* Insere o ponto na lista de pontos ordenado
+    por distância */
+    if(lista == NULL){
+        novo->prox = NULL;
+        return novo;
+    }
+    if(lista->dist > novo->dist){
+        novo->prox = lista;
+        return novo;
+    }
+    Ponto aux = lista;
+    while(aux->prox != NULL && aux->prox->dist < novo->dist){
+        aux = aux->prox;
+    }
+    novo->prox = aux->prox;
+    aux->prox = novo;
+    return lista;
+}
 
+
+Ponto mapearPontos(Grid *g, Position eu, Robot *r){
+    /* Varre a grid hexagonal olhando as casas em cada direção
+    do demônio e cria uma lista com todos os pontos de controle
+    por ordem de distância.
+    Essa função foi bastante inspirada pela função searchNearestControl,
+    do controller_basic.c */
+    Ponto controles = NULL;
+    for(int i = 0; i < 6; i++){
+        int dist = 1 + quickTurn(r->dir, i);
+        Position pos = getNeighbor(eu, i);
+        while(valid(pos, g->m, g->n, g)){
+            if(isControlPoint(g, pos)){
+                aux = malloc(sizeof(ponto));
+                aux->pos = pos;
+                aux->dist = dist;
+                controles = inserePonto(controles, aux);
+            }
+            dist++;
+            pos = getNeighbor(pos, i);
+        }
+    }
+    return Ponto;
+}
+
+Position searchNearestRobot(Grid *g, Position p) {
+    /* Essa função foi bastante inspirada pela função searchNearestControl,
+    do controller_basic.c */
+	int i, min = 500, dist;
+    Position best_bot;
+	for(i = 0; i < 6; i++) {  //  checa na direção de cada lado o hexágono por vez
+		dist = 1;  //  como o ponto de controle
+		Position s = getNeighbor(p,i);
+		while(valid(s, g->m, g->n, g)) {
+			if(s->type == ROBOT) {
+				if(dist < min) {
+					min = dist + quickTurn(s->object->dir, (i-3)%6);  // leva em conta o número de vezes que o robo terá que virar;
+					best_bot = s;
+					//break;  // precisa continuar procurando na linha, pois pode ter outro bot que precise girar menos
+				}
+			}
+			dist++;
+			s = getNeighbor(s, i);
+		}
+	}
+
+	/* Nao existe bot perto (impossivel??) */
+	if (min == 500)
+		return -1;
+
+	else
+		return best_bot;
+}
+
+int marchosias_modo;
+void prepareGame(Grid *g, Position p, int turnCount){
+	/* A ideia nessa função é:
+	 	1. Mapear os pontos de controle do mapa por ordem de proximidade;
+		2. Verificar se você é o robô mais próximo de algum deles;
+		3. Se for:
+			3.1. Mandar o sinal de correr até o ponto;
+		4. Se não for:
+			4.1. Mandar o sinal de ativar o modo de combate; */
+	Ponto controlPoints = mapearPontos(g, p, g->object);
+	Ponto checador = controlPoints;
+	while(checador != NULL && (p != searchNearestRobot(g, checador->pos)))
+		checador = checador->prox;
+	if(checador == NULL) marchosias_modo = 0; // MODO DE COMBATE
+	else marchosias_modo = 1; // MODO DE CONTROLE
 }
 
 /*Dada uma direcao inicial e uma direcao final, ve qual
