@@ -26,9 +26,6 @@ typedef struct lis{
 } ponto;
 typedef ponto *Ponto;
 
-static int move_time = 0;
-static int shoot = 1;
-static int turn = 0;
 
 /*Checa se a posicao dada esta dentro do mapa e nao esta
 sendo ocupada*/
@@ -135,6 +132,7 @@ Position searchNearestRobot(Grid *g, Position p) {
 }
 
 int marchosias_modo;
+Ponto maisProx;
 void prepareGame(Grid *g, Position p, int turnCount){
 	/*
 	A ideia nessa função é:
@@ -150,150 +148,23 @@ void prepareGame(Grid *g, Position p, int turnCount){
 	Ponto controlPoints = mapearPontos(g, p, &g->map[p.x][p.y].object.robot);
 
 	Ponto checador = controlPoints;
-	Position robo_prox = searchNearestRobot(g, checador->pos);
-	while(checador != NULL && (p.x != robo_prox.x || p.y != robo_prox.y)){
+
+	// TESTE
+	while(checador != NULL){
+		printf("x: %d, y:%d, dist:%d \n", checador->pos.x, checador->pos.y, checador->dist);
 		checador = checador->prox;
-		if(checador == NULL) break;
-		robo_prox = searchNearestRobot(g, checador->pos);
 	}
-	if(checador == NULL) marchosias_modo = 0; // MODO DE COMBATE
+	// FIM DO TESTE
+
+	maisProx = controlPoints;
+	Position robo_prox = searchNearestRobot(g, maisProx->pos);
+	while(maisProx != NULL && (p.x != robo_prox.x || p.y != robo_prox.y)){
+		maisProx = maisProx->prox;
+		if(maisProx == NULL) break;
+		robo_prox = searchNearestRobot(g, maisProx->pos);
+	}
+	if(maisProx == NULL) marchosias_modo = 0; // MODO DE COMBATE
 	else marchosias_modo = 1; // MODO DE CONTROLE
-}
-
-//NAO SEI SE TEM ESSA FUNC
-/*Jill esta pronta para o tiroteio*/
-Action shootTime(Grid *g, Position p, Robot *r) {
-	int j;
-	Position s;
-	/*Hora de atirar! Jill vai ficar rotacionando
-	em sentido horario e atirando, ate que ela ache
-	necessario mudar de posicao*/
-	if(move_time == 0){
-		j = rand()%200;
-		if(j < 5) {
-			move_time = 1;
-		}
-		if(shoot){
-			shoot = 0;
-			turn = 1;
-			return SHOOT_CENTER;
-		}
-		else {
-			shoot = 1;
-			turn = 0;
-			return TURN_RIGHT;
-		}
-	}
-	/*Jill percebeu que eh hora de surpreender
-	o inimigo, e mudar sua posicao tatica*/
-	else {
-		move_time = 0;
-		s = getNeighbor(p, r->dir);
-		if(valid(s, g->m, g->n, g)){
-			return WALK;
-		}
-		else
-			return SHOOT_CENTER;
-	}
-	/*Jill para um momento para refletir sobre a vida*/
-	return STAND;
-}
-
-/*COISAS DO RUNNER*/
-
-
-/*Segura a direcao aleatoria que Billy esta seguindo*/
-static int turn_dir = -1;
-
-
-
-/*Escolha uma direcao validao aleatoria. Se
-apos 20 tentativas nao encontrar nenhuma, manda ficar
-parado.*/
-int chooseDir(Grid *g, Position p) {
-	int i, j;
-	Position s;
-	i = rand() % 6;
-	s = getNeighbor(s, i);
-	j = 0;
-	while(!valid(s, g->m, g->n, g) && j < 20) {
-		i = rand() % 6;
-		s = getNeighbor(s, i);
-		j++;
-	}
-	if (j == 10)
-		return -1;
-	else
-		return i;
-}
-
-//NAO SEI SE TEM ESSA FUNCAO
-/*Como Billy faz sua pseudo-magia*/
-Action run(Grid *g, Position p, Robot *r) {
-	int i;
-	Position s;
-	/*Se Billy ja esta em sua direcao de vida, ele
-	a persegue sem fim... ou ate encontrar um
-	obstaculo.*/
-	if(r->dir == turn_dir) {
-		s = getNeighbor(p, turn_dir);
-		if(valid(s, g->m, g->n, g)){
-			return WALK;
-		}
-		turn_dir = -1;
-	}
-	/*Billy chegou aos limites fisicos do mundo, e
-	precisa encontrar uma nova direcao de vida*/
-	if(turn_dir == -1) {
-		i = chooseDir(g, p);
-		if (i == -1)
-			return STAND;
-		else {
-			turn_dir = i;
-		}
-	}
-	return fastTurn(r->dir, turn_dir);
-}
-
-
-/* COISAS DO CONTROLE */
-
-
-static int control_dir;
-/*Checa se a posicao dada esta dentro do mapa e nao esta sendo ocupada*/
-
-
-//JA QUE TEMOS A NOSSA NEM VAMOS USAR ESSA NE?
-
-/*Dado uma posicao, checa se para alguma direcao
-existe um control point, e retorna qual direcao esta
-o mais perto, contando giradas necessárias*/
-int searchNearestControl(Grid *g, Position p, Robot *r) {
-	int i, min = 500, best_dir = 0, cont;
-	for(i = 0; i < 6; i++) {
-		/*Conta para chegar o numero de viradas necessarias
-		ja que elas gastam um turno*/
-		cont = 1 + quickTurn(r->dir, i);
-		Position s = getNeighbor(p,i);
-		while(valid(s, g->m, g->n, g)) {
-			if(isControlPoint(g,s)) {
-				if(cont < min) {
-					min = cont;
-					best_dir = i;
-					break;
-				}
-			}
-			cont++;
-			s = getNeighbor(s, i);
-		}
-	}
-
-	/*Nao existe control points no mapa*/
-	if (min == 500)
-		return -1;
-
-	else
-		return best_dir;
 }
 
 
@@ -341,8 +212,9 @@ Action andar(Grid *g, Position p, Position robo)
 
 		}
 		return WALK;
-
 	}
+	return WALK;
+
 }
 
 int taVindoTiro (Grid *g, Position myPos, Direction d) {
@@ -369,63 +241,47 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
-	scanf("%d", &marchosias_modo);
-	int i, j;
-	Position s;
 	Robot *r = &g->map[p.x][p.y].object.robot;
 
-	/*define o comportamento apos chegar em um ponto de controle*/
-	if(isControlPoint(g,p)) {
-		for (Direction d1 = 0; d1 < 6; d1++) {
-			if (taVindoTiro(g, p, d1)) {
-				if (d1 == ((r->dir)+2)%6 && taVindoTiro == 1) {
-					return OBSTACLE_RIGHT;
-				}
-				else if (d1 == (r->dir+3)%6 && taVindoTiro == 1) {
-					return OBSTACLE_CENTER;
-				}
-				else if (d1 == (r->dir+4)%6 && taVindoTiro == 1) {
-					return OBSTACLE_LEFT;
-				}
-				else if (d1 == r->dir && taVindoTiro == 1) {
-					return SHOOT_CENTER;
-				}
-				else if (d1 == (r->dir+1)%6 && taVindoTiro == 1) {
-					return SHOOT_RIGHT;
-				}
-				else if (d1 == (r->dir+5)%6 && taVindoTiro == 1) {
-					return SHOOT_LEFT;
-				}
-			}
-		}
-		return STAND;
-	}
-	else {
-		/*procura algum control point em alguam direcao do robo*/
-		control_dir = searchNearestControl(g, p, r);
-		/*se NAO TEM PONTO DE CONTROLE*/
-		if (control_dir == -1) {
-			for(i = r->dir, j = 0; j < 6; i++,j++){
-				if (i >= 6) i-=6;
-				s = getNeighbor(p,i);
-				if(valid(s, g->m, g->n, g)) {
-					if(i == r->dir) {
-						return WALK;
+	if(marchosias_modo == 1){ // MODO DE CONTROLE
+		/* SE ESTIVER NO PONTO DE CONTROLE */
+		if(isControlPoint(g,p)) {
+			for (Direction d1 = 0; d1 < 6; d1++) {
+				if (taVindoTiro(g, p, d1)) {
+					if (d1 == ((r->dir)+2)%6 && taVindoTiro(g, p, d1) == 1) {
+						return OBSTACLE_RIGHT;
 					}
-					else {
-						return fastTurn(r->dir, i);
+					else if (d1 == (r->dir+3)%6 && taVindoTiro(g, p, d1) == 1) {
+						return OBSTACLE_CENTER;
+					}
+					else if (d1 == (r->dir+4)%6 && taVindoTiro(g, p, d1) == 1) {
+						return OBSTACLE_LEFT;
+					}
+					else if (d1 == r->dir && taVindoTiro(g, p, d1) == 1) {
+						return SHOOT_CENTER;
+					}
+					else if (d1 == (r->dir+1)%6 && taVindoTiro(g, p, d1) == 1) {
+						return SHOOT_RIGHT;
+					}
+					else if (d1 == (r->dir+5)%6 && taVindoTiro(g, p, d1) == 1) {
+						return SHOOT_LEFT;
 					}
 				}
 			}
-			/*Se nenhuma posicao em volta eh valida, SAD TIME*/
 			return STAND;
 		}
-		/*Se encontrou um control point em alguma direcao,
-		 comeca a virar e andar em sua direcao*/
-		else if(control_dir == r->dir)
-			return andar(g, getNeighbor(s, control_dir), s);
-		else {
-			return fastTurn(r->dir, control_dir);
+		else{
+			/*
+
+			FUNÇÃO PARA ANDAR ATÉ LÁ (USANDO A FUNÇÃO "andar" DA BRUNA)
+
+			*/
+			Position destino = maisProx->pos;
+			return STAND;
 		}
+	}
+	else {  // MODO DE COMBATE
+		/* PRECISA CODAR ISSO AQUI */
+		return STAND;
 	}
 }
