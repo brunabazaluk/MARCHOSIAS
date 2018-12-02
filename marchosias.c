@@ -370,7 +370,7 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	return tempo;
 }
 
-void metralhaGeral(Grid *g, Position p, Direction dir)
+Action metralhaGeral(Grid *g, Position p, Direction dir)
 {
 	Position pos_inimigo,pos=p;
 
@@ -443,6 +443,6 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	}
 	else {  // MODO DE COMBATE
 		/* PRECISA CODAR ISSO AQUI */
-		return STAND;
+		return metralhaGeral(g, p, r->dir);
 	}
 }
