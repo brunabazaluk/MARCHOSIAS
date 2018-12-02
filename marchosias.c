@@ -1,3 +1,9 @@
+/* Este programa foi escrito por: Bruna Bazaluk, Gustavo Bastos e Rafael Tsuha. */
+/* Utilizamos algumas funcoes ja existentes de Yan Couto e Ricardo Fonseca.     */
+/* As funcoes escritas por eles sao as seguintes: 				*/
+/* int valid; int isControlPoint; int quickTurn; int fastTurn; POE O RESTO AQUI DEPOIS NAO ESQUECE*/
+/**/
+
 #include "../robot_fight.h"
 #include <stdlib.h>
 
@@ -127,7 +133,7 @@ void prepareGame(Grid *g, Position p, int turnCount){
 	else marchosias_modo = 1; // MODO DE CONTROLE
 }
 
-
+//NAO SEI SE TEM ESSA FUNC
 /*Jill esta pronta para o tiroteio*/
 Action shootTime(Grid *g, Position p, Robot *r) {
 	int j;
@@ -194,6 +200,7 @@ int chooseDir(Grid *g, Position p) {
 		return i;
 }
 
+//NAO SEI SE TEM ESSA FUNCAO
 /*Como Billy faz sua pseudo-magia*/
 Action run(Grid *g, Position p, Robot *r) {
 	int i;
@@ -228,6 +235,9 @@ Action run(Grid *g, Position p, Robot *r) {
 static int control_dir;
 /*Checa se a posicao dada esta dentro do mapa e nao esta sendo ocupada*/
 
+
+//JA QUE TEMOS A NOSSA NEM VAMOS USAR ESSA NE?
+
 /*Dado uma posicao, checa se para alguma direcao
 existe um control point, e retorna qual direcao esta
 o mais perto, contando giradas necessárias*/
@@ -261,6 +271,10 @@ int searchNearestControl(Grid *g, Position p, Robot *r) {
 
 
 /* checa se vc consegue andar pra casa desejada sem levar um tiro */
+/* caso um tiro estiver na msm posicao q vc pretende ir na prox rodada */
+/* a funcao checa se a quantidade de tiros na sua direcao eh menor que */
+/* a qtdade de bullets q marchosias tem, se sim, ele atira; se nao, ele*/
+/* ele vira para mudar de casa na rodada seguinte */
 Action andar(Grid *g, Position p, Position robo)
 {
 	Tile bloco;
