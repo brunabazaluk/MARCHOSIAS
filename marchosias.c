@@ -18,6 +18,29 @@ int valid(Position p, int m, int n, Grid *g) {
 	return ((p.x >= 0 && p.x < m && p.y >= 0 && p.y < n) && (g->map[p.x][p.y].type == NONE));
 }
 
+int isControlPoint(Grid *g, Position p) {
+	return (g->map[p.x][p.y].isControlPoint);
+}
+
+/*Dada uma direcao inicial e uma direcao final, ve qual
+o menor numero de viradas sao necessarias*/
+int quickTurn(int ini, int end) {
+	int i, j;
+	for(i = ini, j = 0; i != end; i = (i+1)%6, j++)
+	if (i >= 6) i-= 6;
+	if (j > 3) j = 6-j;
+	return j;
+}
+/*Dada uma direcao inicial e uma direcao final, ve
+para qual lado virando eh mais rapido de se chegar*/
+Action fastTurn(int ini, int end) {
+	int dif = end-ini;
+	if((dif <= 3 && dif >= 0) || (dif <= -3))
+	return TURN_RIGHT;
+	else
+	return TURN_LEFT;
+}
+
 Ponto inserePonto(Ponto lista, Ponto novo){
     /* Insere o ponto na lista de pontos ordenado
     por distância */
@@ -51,7 +74,7 @@ Ponto mapearPontos(Grid *g, Position eu, Robot *r){
         Position pos = getNeighbor(eu, i);
         while(valid(pos, g->m, g->n, g)){
             if(isControlPoint(g, pos)){
-                aux = malloc(sizeof(ponto));
+                Ponto aux = malloc(sizeof(ponto));
                 aux->pos = pos;
                 aux->dist = dist;
                 controles = inserePonto(controles, aux);
@@ -60,7 +83,7 @@ Ponto mapearPontos(Grid *g, Position eu, Robot *r){
             pos = getNeighbor(pos, i);
         }
     }
-    return Ponto;
+    return controles;
 }
 
 Position searchNearestRobot(Grid *g, Position p) {
@@ -72,9 +95,9 @@ Position searchNearestRobot(Grid *g, Position p) {
 		dist = 1;  //  como o ponto de controle
 		Position s = getNeighbor(p,i);
 		while(valid(s, g->m, g->n, g)) {
-			if(s->type == ROBOT) {
+			if(g->map[s.x][s.y].type == ROBOT) {
 				if(dist < min) {
-					min = dist + quickTurn(s->object->dir, (i-3)%6);  // leva em conta o número de vezes que o robo terá que virar;
+					min = dist + quickTurn(g->map[s.x][s.y].object.robot.dir, (i-3)%6);  // leva em conta o número de vezes que o robo terá que virar;
 					best_bot = s;
 					//break;  // precisa continuar procurando na linha, pois pode ter outro bot que precise girar menos
 				}
@@ -84,12 +107,7 @@ Position searchNearestRobot(Grid *g, Position p) {
 		}
 	}
 
-	/* Nao existe bot perto (impossivel??) */
-	if (min == 500)
-		return -1;
-
-	else
-		return best_bot;
+	return best_bot;
 }
 
 int marchosias_modo;
@@ -101,31 +119,12 @@ void prepareGame(Grid *g, Position p, int turnCount){
 			3.1. Mandar o sinal de correr até o ponto;
 		4. Se não for:
 			4.1. Mandar o sinal de ativar o modo de combate; */
-	Ponto controlPoints = mapearPontos(g, p, g->object);
+	Ponto controlPoints = mapearPontos(g, p, &g->map[p.x][p.y].object.robot);
 	Ponto checador = controlPoints;
-	while(checador != NULL && (p != searchNearestRobot(g, checador->pos)))
+	while(checador != NULL && (p.x != searchNearestRobot(g, checador->pos).x || p.y != searchNearestRobot(g, checador->pos).y))
 		checador = checador->prox;
 	if(checador == NULL) marchosias_modo = 0; // MODO DE COMBATE
 	else marchosias_modo = 1; // MODO DE CONTROLE
-}
-
-/*Dada uma direcao inicial e uma direcao final, ve qual
-o menor numero de viradas sao necessarias*/
-int quickTurn(int ini, int end) {
-	int i, j;
-	for(i = ini, j = 0; i != end; i = (i+1)%6, j++)
-		if (i >= 6) i-= 6;
-	if (j > 3) j = 6-j;
-	return j;
-}
-/*Dada uma direcao inicial e uma direcao final, ve
-para qual lado virando eh mais rapido de se chegar*/
-Action fastTurn(int ini, int end) {
-	int dif = end-ini;
-	if((dif <= 3 && dif >= 0) || (dif <= -3))
-		return TURN_RIGHT;
-	else
-		return TURN_LEFT;
 }
 
 
@@ -229,10 +228,6 @@ Action run(Grid *g, Position p, Robot *r) {
 static int control_dir;
 /*Checa se a posicao dada esta dentro do mapa e nao esta sendo ocupada*/
 
-
-int isControlPoint(Grid *g, Position p) {
-	return (g->map[p.x][p.y].isControlPoint);
-}
 /*Dado uma posicao, checa se para alguma direcao
 existe um control point, e retorna qual direcao esta
 o mais perto, contando giradas necessárias*/
@@ -299,8 +294,10 @@ Action andar(Grid *g, Position p, Position robo)
 					if((g->map[robo.x][robo.y]).object.robot.dir ==1) return SHOOT_LEFT;
 
 				}
+				else return TURN_LEFT;
 
 			}
+
 		}
 		return WALK;
 
@@ -308,7 +305,7 @@ Action andar(Grid *g, Position p, Position robo)
 }
 
 int taVindoTiro (Grid *g, Position myPos, Direction d) {
-/*verifica se esta vindo projetil da direcao d e o tempo em turnos 
+/*verifica se esta vindo projetil da direcao d e o tempo em turnos
   q vai levar para o projetil chegar.
   retorna o tempo em turnos para o projetil chegar caso exista;
   retorna 0 caso nao haja projeteis vindo
@@ -354,8 +351,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	else {
 		/*procura algum control point em alguam direcao do robo*/
 		control_dir = searchNearestControl(g, p, r);
-		/*Caso em nenhuma direcao tem um control point livre
-		andar em uma direcao valida, ou comeca a virar para uma direcao valida*/
+		/*se NAO TEM PONTO DE CONTROLE*/
 		if (control_dir == -1) {
 			for(i = r->dir, j = 0; j < 6; i++,j++){
 				if (i >= 6) i-=6;
@@ -375,7 +371,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 		/*Se encontrou um control point em alguma direcao,
 		 comeca a virar e andar em sua direcao*/
 		else if(control_dir == r->dir)
-			return WALK;
+			return andar(g, getNeighbor(s, control_dir), s);
 		else {
 			return fastTurn(r->dir, control_dir);
 		}
