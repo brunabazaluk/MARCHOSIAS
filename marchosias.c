@@ -377,7 +377,32 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	return tempo;
 }
 
+void metralhaGeral(Grid *g, Position p, Direction dir)
+{
+	Tile bloco;
+	Position pos_inimigo,pos=p;
 
+	pos_inimigo = searchNearestRobot(g, p);
+
+	while do centro
+		if (getNeighbor(pos, dir)==pos_inimigo)
+			return SHOOT_CENTER;	
+		else pos=getNeighbor(pos, dir);
+		if(!valid(pos, m, n, g)) break;
+
+	pos=p;
+	while da direita
+		if (getNeighbor(pos, (dir+1)%6)==pos_inimigo)
+			return SHOOT_RIGHT;
+		else pos=getNeighbor(pos, (dir+1)%6);
+		if(!valid(pos, m, n, g)) break;
+	pos=p;
+	while da esquerda
+		if  (getNeighbor(pos, (dir-1)%6)==pos_inimigo)
+			return SHOOT_LEFT;
+		else pos=getNeighbor(pos, (dir-1)%6);
+		if(!valid(pos, m, n, g)) break;
+}
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
 	Robot *r = &g->map[p.x][p.y].object.robot;
