@@ -387,10 +387,13 @@ Action metralhaGeral(Grid *g, Position p, Direction dir)
 		if(!valid(pos, m, n, g)) break;
 	}
 	pos=p;
+	Direction d;
 	while (valid(pos, m, n, g)) {
-		if  (getNeighbor(pos, (dir-1)%6)==pos_inimigo)
+		d= (dir-1)%6;
+		if (d<0) d= -1*d;
+		if  (getNeighbor(pos, d)==pos_inimigo)
 			return SHOOT_LEFT;
-		else pos=getNeighbor(pos, (dir-1)%6);
+		else pos=getNeighbor(pos, d);
 		if(!valid(pos, m, n, g)) break;
 	}
 }
