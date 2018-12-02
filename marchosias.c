@@ -354,12 +354,12 @@ void destroiFila (Fila f)  {
 
 
 int taVindoTiro (Grid *g, Position myPos, Direction d) {
-/*verifica se esta vindo projetil da direcao d e o tempo em turnos
-  q vai levar para o projetil chegar.
-  retorna o tempo em turnos para o projetil chegar caso exista;
-  retorna 0 caso nao haja projeteis vindo
-  */
-
+	/*
+	verifica se esta vindo projetil da direcao d e o tempo em turnos
+	q vai levar para o projetil chegar.
+	retorna o tempo em turnos para o projetil chegar caso exista;
+	retorna 0 caso nao haja projeteis vindo
+	*/
 	Position pos = getNeighbor (myPos, d);
 	int tempo = 0;
 
@@ -402,7 +402,6 @@ void metralhaGeral(Grid *g, Position p, Direction dir)
 		else pos=getNeighbor(pos, (dir-1)%6);
 		if(!valid(pos, m, n, g)) break;
 }
-
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
 	Robot *r = &g->map[p.x][p.y].object.robot;
