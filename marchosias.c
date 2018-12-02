@@ -307,6 +307,15 @@ Action andar(Grid *g, Position p, Position robo)
 	}
 }
 
+Direction taVindoTiro (Grid *g, Position myPos, Direction d) {
+/*retorna se esta vindo projetil da direcao d e o tempo em turnos 
+  q vai levar para o projetil chegar*/
+	Position pos = get
+	if () {
+		while (valid ())
+	}
+}
+
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	int i, j;
 	Position s;
@@ -314,6 +323,9 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 
 	/*Se estiver em cima de um control point, SCORE TIME*/
 	if(isControlPoint(g,p))
+		if (taVindoTiro()) {
+			
+		}
 		return STAND;
 
 	else {
