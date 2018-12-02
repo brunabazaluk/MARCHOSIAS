@@ -56,9 +56,8 @@ Action fastTurn(int ini, int end) {
 	return TURN_LEFT;
 }
 
-<<<<<<< HEAD
-int distanciaEmTurnos (Grid *g, Posicao partida, Posicao chegada, Robo *r) {
-/*devolve o tempo em turnos necessario para partir a posicao chegada e 
+int distanciaEmTurnos (Grid *g, Position partida, Position chegada, Robot *r) {
+/*devolve o tempo em turnos necessario para partir a posicao chegada e
   ir ate a posicao partida, ignorando possiveis obstaculos*/
 	//Tile mapa[30][30];
 	//for (int i = 0; i < 30; i++) {
@@ -76,7 +75,7 @@ int distanciaEmTurnos (Grid *g, Posicao partida, Posicao chegada, Robo *r) {
 	}
 	p = chegada;
 	insereFila (f, p);
-	
+
 }
 
 Ponto inserePonto(Ponto lista, Position p, int dist){
