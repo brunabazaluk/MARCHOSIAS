@@ -96,10 +96,10 @@ int distanciaEmTurnos (Grid *g, Position partida, Position chegada, Robot *r) {
 	insereFila (f, p);
 	while (!filaVazia (f)) {
 		for (int i = 0; i < 6; i ++) {
-			p = getNeighbor (inicioDaFila->info, i);
+			p = getNeighbor (inicioDaFila(f)->info, i);
 			if (p.x >= 0 && p.x < g->m && p.y >= 0 && p.y < g->n) {
 				if (mapa[p.x][p.y] == 0){
-					mapa[p.x][p.y] = mapa[inicioDaFila->info.x][inicioDaFila->info.y]+1;
+					mapa[p.x][p.y] = mapa[inicioDaFila(f)->info.x][inicioDaFila(f)->info.y]+1;
 					insereFila(f, p);
 				}
 			}
@@ -302,6 +302,7 @@ int retiraFila (Fila f) {
 		f->head = f->head->prox;
 		free (aux);
 	}
+	return 1;
 }
 
 int filaVazia (Fila f) {
