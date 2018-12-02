@@ -354,12 +354,12 @@ void destroiFila (Fila f)  {
 
 
 int taVindoTiro (Grid *g, Position myPos, Direction d) {
-/*verifica se esta vindo projetil da direcao d e o tempo em turnos
-  q vai levar para o projetil chegar.
-  retorna o tempo em turnos para o projetil chegar caso exista;
-  retorna 0 caso nao haja projeteis vindo
-  */
-
+	/*
+	verifica se esta vindo projetil da direcao d e o tempo em turnos
+	q vai levar para o projetil chegar.
+	retorna o tempo em turnos para o projetil chegar caso exista;
+	retorna 0 caso nao haja projeteis vindo
+	*/
 	Position pos = getNeighbor (myPos, d);
 	int tempo = 0;
 
@@ -376,32 +376,6 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	return tempo;
 }
 
-void metralhaGeral(Grid *g, Position p, Direction dir)
-{
-	Tile bloco;
-	Position pos_inimigo,pos=p;
-
-	pos_inimigo = searchNearestRobot(g, p);
-
-	while do centro
-		if (getNeighbor(pos, dir)==pos_inimigo)
-			ATIRA LA
-		else pos=getNeighbor(pos, dir);
-		if(!valid(pos, m, n, g)) break;
-
-	pos=p;
-	while da direita
-		if (getNeighbor(pos, (dir+1)%6)==pos_inimigo)
-			ATIRA LA
-		else pos=getNeighbor(pos, (dir+1)%6);
-		if(!valid(pos, m, n, g)) break;
-	pos=p;
-	while da esquerda
-		if  (getNeighbor(pos, (dir-1)%6)==pos_inimigo)
-			ATIRA LA
-		else pos=getNeighbor(pos, (dir-1)%6);
-		if(!valid(pos, m, n, g)) break;
-}
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
