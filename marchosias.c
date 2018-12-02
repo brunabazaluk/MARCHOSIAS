@@ -4,6 +4,18 @@
 /* int valid; int isControlPoint; int quickTurn; int fastTurn; POE O RESTO AQUI DEPOIS NAO ESQUECE*/
 /**/
 
+///////////////////////////////////////////////////////////////////////////////////
+/* Marchosias eh um marques do inferno, um demonio com 31 legioes em seu comando. */
+/* Nao espere que esse demonio tenha piedade do seu robo. 			 */
+/* Marchocias magnus Marchio est. Se ostentat specie lupae ferocissimae cum alis  */
+/* gryphi, cauda serpentina, & ex ore nescio quid evomens. Quum hominis imaginem  */
+/* induit, pugnator est optimus. Ad quaesita vere respondet: fidelis in cunctis   */
+/* exorcistae mandatis. Fuit ordinis Dominationum. Huic subjacent legiones 	 */
+/* triginta. Sperat se post mille ducentos annos ad septimum Thronum reversurum:  */
+/* sed ea spe falsus est.*/
+///////////////////////////////////////////////////////////////////////////////////
+
+
 #include "../robot_fight.h"
 #include <stdlib.h>
 
@@ -125,6 +137,7 @@ void prepareGame(Grid *g, Position p, int turnCount){
 			3.1. Mandar o sinal de correr até o ponto;
 		4. Se não for:
 			4.1. Mandar o sinal de ativar o modo de combate; */
+	setName("MARCHOSIAS");
 	Ponto controlPoints = mapearPontos(g, p, &g->map[p.x][p.y].object.robot);
 	Ponto checador = controlPoints;
 	while(checador != NULL && (p.x != searchNearestRobot(g, checador->pos).x || p.y != searchNearestRobot(g, checador->pos).y))
@@ -328,7 +341,7 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	Position pos = getNeighbor (myPos, d);
 	int tempo = 0;
 
-	while (pos.x >= 0 && pos.x < g.m && pos.y >= 0 && pos.y < g.n && g->map[pos.x][pos.y].type != ROBOT) {
+	while (pos.x >= 0 && pos.x < g->m && pos.y >= 0 && pos.y < g->n && g->map[pos.x][pos.y].type != ROBOT) {
 		if (g->map[pos.x][pos.y].type == PROJECTILE) {
 			if (g->map[pos.x][pos.y].object.projectile.dir == (d+3)%6) {
 			//direcao oposta a d
@@ -341,6 +354,8 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
+	printf("%d\n", marchosias_modo);
+	scanf("%d", &marchosias_modo);
 	int i, j;
 	Position s;
 	Robot *r = &g->map[p.x][p.y].object.robot;
