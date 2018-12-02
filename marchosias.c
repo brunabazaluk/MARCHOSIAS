@@ -4,6 +4,18 @@
 /* int valid; int isControlPoint; int quickTurn; int fastTurn; POE O RESTO AQUI DEPOIS NAO ESQUECE*/
 /**/
 
+///////////////////////////////////////////////////////////////////////////////////
+/* Marchosias eh um marques do inferno, um demonio com 31 legioes em seu comando. */
+/* Nao espere que esse demonio tenha piedade do seu robo. 			 */
+/* Marchocias magnus Marchio est. Se ostentat specie lupae ferocissimae cum alis  */
+/* gryphi, cauda serpentina, & ex ore nescio quid evomens. Quum hominis imaginem  */
+/* induit, pugnator est optimus. Ad quaesita vere respondet: fidelis in cunctis   */
+/* exorcistae mandatis. Fuit ordinis Dominationum. Huic subjacent legiones 	 */
+/* triginta. Sperat se post mille ducentos annos ad septimum Thronum reversurum:  */
+/* sed ea spe falsus est.*/
+///////////////////////////////////////////////////////////////////////////////////
+
+
 #include "../robot_fight.h"
 #include <stdlib.h>
 
