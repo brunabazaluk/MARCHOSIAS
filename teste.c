@@ -179,14 +179,14 @@ Action andar(Grid *g, Position p, Position robo)
 	Direction ida, volta;
 	int d = 0;
 	pos = getNeighbor(p,d);
-	bloco = g->map[pos->x][pos->y];
-	int cont=0, m->pos-x, n=pos->y;
+	bloco = g->map[pos.x][pos.y];
+	int cont=0, m=pos.x, n=pos.y;
 
 
 	/* checa os vizinhos da casa que vc pretende ir */
 	for(ida=0, volta=0; ida<=5 && volta<=5; ida++, volta++)
 	{
-		if(bloco->type == "PROJECTILE")
+		if(strcmp(bloco->type,  "PROJECTILE") ==0)
 		{
 			volta=bloco->object->dir;
 			if(volta - ida == 3 || volta-ida==-3)
@@ -194,7 +194,7 @@ Action andar(Grid *g, Position p, Position robo)
 				linha=pos;
 				while(valid(linha, m, n, g))
 				{
-					if((g->map[pos->x][pos->y])->type == "PROJECTILE") cont++;  //  pos ou linha?
+					if(strcmp((g->map[pos.x][pos.y])->type, "PROJECTILE") == 0) cont++;  //  pos ou linha?
 					linha=getNeighbor(linha, ida);
 				}
 
@@ -207,8 +207,9 @@ Action andar(Grid *g, Position p, Position robo)
 				}
 
 			}
-			return TURN_LEFT;
 		}
+		return WALK;
+
 	}
 }
 
