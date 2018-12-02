@@ -79,8 +79,8 @@ Action fastTurn(int ini, int end) {
 }
 
 int distanciaEmTurnos (Grid *g, Position partida, Position chegada, Robot *r) {
-/*devolve o tempo em turnos necessario para partir a posicao chegada e
-  ir ate a posicao partida, ignorando possiveis obstaculos*/
+	/*devolve o tempo em turnos necessario para partir a posicao chegada e
+	ir ate a posicao partida, ignorando possiveis obstaculos*/
 	Fila f = criaFila ();
 	Position p;
 	int distancia;
@@ -90,7 +90,7 @@ int distanciaEmTurnos (Grid *g, Position partida, Position chegada, Robot *r) {
 			mapa[i][j] = 0;
 		}
 	}
-	
+
 	p = chegada;
 	mapa[p.x][p.y] = 1;
 	insereFila (f, p);
@@ -108,7 +108,7 @@ int distanciaEmTurnos (Grid *g, Position partida, Position chegada, Robot *r) {
 	}
 	//distancia em casas, sem considerar rotacao;
 	distancia = mapa[chegada.x][chegada.y] -1;
-	
+
 	return distancia;
 }
 
@@ -220,11 +220,11 @@ void prepareGame(Grid *g, Position p, int turnCount){
 }
 
 
-/* checa se vc consegue andar pra casa desejada sem levar um tiro */
-/* caso um tiro estiver na msm posicao q vc pretende ir na prox rodada */
-/* a funcao checa se a quantidade de tiros na sua direcao eh menor que */
-/* a qtdade de bullets q marchosias tem, se sim, ele atira; se nao, ele*/
-/* ele vira para mudar de casa na rodada seguinte */
+/* checa se vc consegue andar pra casa desejada sem levar um tiro
+caso um tiro estiver na msm posicao q vc pretende ir na prox rodada
+a funcao checa se a quantidade de tiros na sua direcao eh menor que
+a qtdade de bullets q marchosias tem, se sim, ele atira; se nao, ele
+ele vira para mudar de casa na rodada seguinte */
 Action andar(Grid *g, Position p, Position robo)
 {
 	Tile bloco;
@@ -269,7 +269,32 @@ Action andar(Grid *g, Position p, Position robo)
 
 }
 
-
+Action peregrinar(Grid *g, Position destino, Position inicio, Robot *r){
+	if(destino.y == inicio.y){
+		if(destino.x < inicio.x)
+		if(r->dir == LEFT) return andar(g, getNeighbor(inicio, LEFT), inicio);
+		else return fastTurn(r->dir, LEFT);
+		else
+		if(r->dir == RIGHT) return andar(g, getNeighbor(inicio, RIGHT), inicio);
+		else return fastTurn(r->dir, RIGHT);
+	}
+	else if(destino.y < inicio.y){
+		if(destino.x < inicio.x || (destino.x == inicio.x && inicio.y % 2 == 1))
+		if(r->dir == TOP_LEFT) return andar(g, getNeighbor(inicio, TOP_LEFT), inicio);
+		else return fastTurn(r->dir, TOP_LEFT);
+		else
+		if(r->dir == TOP_RIGHT) return andar(g, getNeighbor(inicio, TOP_RIGHT), inicio);
+		else return fastTurn(r->dir, TOP_RIGHT);
+	}
+	else{
+		if(destino.x < inicio.x || (destino.x == inicio.x && inicio.y % 2 == 1))
+		if(r->dir == BOTTOM_LEFT) return andar(g, getNeighbor(inicio, BOTTOM_LEFT), inicio);
+		else return fastTurn(r->dir, BOTTOM_LEFT);
+		else
+		if(r->dir == BOTTOM_RIGHT) return andar(g, getNeighbor(inicio, BOTTOM_RIGHT), inicio);
+		else return fastTurn(r->dir, BOTTOM_RIGHT);
+	}
+}
 
 Fila criaFila () {
 	Fila f;
@@ -306,10 +331,10 @@ int retiraFila (Fila f) {
 }
 
 int filaVazia (Fila f) {
-	if (f->head == NULL) 
-		return 1;
-	else 
-		return 0;
+	if (f->head == NULL)
+	return 1;
+	else
+	return 0;
 }
 tipoDaFila inicioDaFila (Fila f) {
 	return f->head;
@@ -327,6 +352,7 @@ void destroiFila (Fila f)  {
 }
 
 
+
 int taVindoTiro (Grid *g, Position myPos, Direction d) {
 /*verifica se esta vindo projetil da direcao d e o tempo em turnos
   q vai levar para o projetil chegar.
@@ -338,6 +364,7 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	int tempo = 0;
 
 	while (pos.x >= 0 && pos.x < g->m && pos.y >= 0 && pos.y < g->n && g->map[pos.x][pos.y].type != ROBOT) {
+		printf("TA NO WHILE\n");
 		if (g->map[pos.x][pos.y].type == PROJECTILE) {
 			if (g->map[pos.x][pos.y].object.projectile.dir == (d+3)%6) {
 			//direcao oposta a d
@@ -388,7 +415,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 
 			*/
 			Position destino = maisProx->pos;
-			return STAND;
+			return peregrinar(g, destino, p, r);
 		}
 	}
 	else {  // MODO DE COMBATE
