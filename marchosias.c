@@ -294,8 +294,10 @@ Action andar(Grid *g, Position p, Position robo)
 					if((g->map[robo.x][robo.y]).object.robot.dir ==1) return SHOOT_LEFT;
 
 				}
+				else return TURN_LEFT;
 
 			}
+
 		}
 		return WALK;
 
@@ -340,8 +342,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	else {
 		/*procura algum control point em alguam direcao do robo*/
 		control_dir = searchNearestControl(g, p, r);
-		/*Caso em nenhuma direcao tem um control point livre
-		andar em uma direcao valida, ou comeca a virar para uma direcao valida*/
+		/*se NAO TEM PONTO DE CONTROLE*/
 		if (control_dir == -1) {
 			for(i = r->dir, j = 0; j < 6; i++,j++){
 				if (i >= 6) i-=6;
@@ -361,7 +362,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 		/*Se encontrou um control point em alguma direcao,
 		 comeca a virar e andar em sua direcao*/
 		else if(control_dir == r->dir)
-			return WALK;
+			return andar(g, getNeighbor(s, control_dir), s);
 		else {
 			return fastTurn(r->dir, control_dir);
 		}
