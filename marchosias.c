@@ -1,3 +1,21 @@
+/* Este programa foi escrito por: Bruna Bazaluk, Gustavo Bastos e Rafael Tsuha. */
+/* Utilizamos algumas funcoes ja existentes de Yan Couto e Ricardo Fonseca.     */
+/* As funcoes escritas por eles sao as seguintes: 				*/
+/* int valid; int isControlPoint; int quickTurn; int fastTurn; POE O RESTO AQUI DEPOIS NAO ESQUECE*/
+/**/
+
+///////////////////////////////////////////////////////////////////////////////////
+/* Marchosias eh um marques do inferno, um demonio com 31 legioes em seu comando. */
+/* Nao espere que esse demonio tenha piedade do seu robo. 			 */
+/* Marchocias magnus Marchio est. Se ostentat specie lupae ferocissimae cum alis  */
+/* gryphi, cauda serpentina, & ex ore nescio quid evomens. Quum hominis imaginem  */
+/* induit, pugnator est optimus. Ad quaesita vere respondet: fidelis in cunctis   */
+/* exorcistae mandatis. Fuit ordinis Dominationum. Huic subjacent legiones 	 */
+/* triginta. Sperat se post mille ducentos annos ad septimum Thronum reversurum:  */
+/* sed ea spe falsus est.*/
+///////////////////////////////////////////////////////////////////////////////////
+
+
 #include "../robot_fight.h"
 #include <stdlib.h>
 
@@ -128,7 +146,7 @@ void prepareGame(Grid *g, Position p, int turnCount){
 	else marchosias_modo = 1; // MODO DE CONTROLE
 }
 
-
+//NAO SEI SE TEM ESSA FUNC
 /*Jill esta pronta para o tiroteio*/
 Action shootTime(Grid *g, Position p, Robot *r) {
 	int j;
@@ -195,6 +213,7 @@ int chooseDir(Grid *g, Position p) {
 		return i;
 }
 
+//NAO SEI SE TEM ESSA FUNCAO
 /*Como Billy faz sua pseudo-magia*/
 Action run(Grid *g, Position p, Robot *r) {
 	int i;
@@ -229,6 +248,9 @@ Action run(Grid *g, Position p, Robot *r) {
 static int control_dir;
 /*Checa se a posicao dada esta dentro do mapa e nao esta sendo ocupada*/
 
+
+//JA QUE TEMOS A NOSSA NEM VAMOS USAR ESSA NE?
+
 /*Dado uma posicao, checa se para alguma direcao
 existe um control point, e retorna qual direcao esta
 o mais perto, contando giradas necessárias*/
@@ -262,6 +284,10 @@ int searchNearestControl(Grid *g, Position p, Robot *r) {
 
 
 /* checa se vc consegue andar pra casa desejada sem levar um tiro */
+/* caso um tiro estiver na msm posicao q vc pretende ir na prox rodada */
+/* a funcao checa se a quantidade de tiros na sua direcao eh menor que */
+/* a qtdade de bullets q marchosias tem, se sim, ele atira; se nao, ele*/
+/* ele vira para mudar de casa na rodada seguinte */
 Action andar(Grid *g, Position p, Position robo)
 {
 	Tile bloco;
@@ -327,7 +353,6 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 }
 
 
-
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
 	scanf("%d", &marchosias_modo);
@@ -336,12 +361,22 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	Robot *r = &g->map[p.x][p.y].object.robot;
 
 	/*Se estiver em cima de um control point, SCORE TIME*/
-	if(isControlPoint(g,p))
-		//if (taVindoTiro()) {
-		//
-		//}
+	if(isControlPoint(g,p)) {
+		for (Direction d1 = 0; d1 < 6; d1++) {
+			if (taVindoTiro(g, p, d1)) {
+				if (d1 == ((r->dir)+2)%6 && taVindoTiro == 1) {
+					return OBSTACLE_RIGHT;
+				}
+				else if (d1 == ((r->dir)+3)%6 && taVindoTiro == 1) {
+					return OBSTACLE_CENTER;
+				}
+				else if (d1 == ((r->dir)+4)%6 && taVindoTiro == 1) {
+					return OBSTACLE_LEFT;
+				}
+			}
+		}
 		return STAND;
-
+	}
 	else {
 		/*procura algum control point em alguam direcao do robo*/
 		control_dir = searchNearestControl(g, p, r);
