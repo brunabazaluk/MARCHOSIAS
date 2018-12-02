@@ -15,6 +15,26 @@ void prepareGame(Grid *g, Position p, int turnCount) {
 
 }
 
+/*Dada uma direcao inicial e uma direcao final, ve qual
+o menor numero de viradas sao necessarias*/
+int quickTurn(int ini, int end) {
+	int i, j;
+	for(i = ini, j = 0; i != end; i = (i+1)%6, j++)
+		if (i >= 6) i-= 6;
+	if (j > 3) j = 6-j;
+	return j;
+}
+/*Dada uma direcao inicial e uma direcao final, ve
+para qual lado virando eh mais rapido de se chegar*/
+Action fastTurn(int ini, int end) {
+	int dif = end-ini;
+	if((dif <= 3 && dif >= 0) || (dif <= -3))
+		return TURN_RIGHT;
+	else
+		return TURN_LEFT;
+}
+
+
 /*Jill esta pronta para o tiroteio*/
 Action shootTime(Grid *g, Position p, Robot *r) {
 	int j;
@@ -116,29 +136,9 @@ static int control_dir;
 /*Checa se a posicao dada esta dentro do mapa e nao esta sendo ocupada*/
 
 
-/*Dada uma direcao inicial e uma direcao final, ve qual
-o menor numero de viradas sao necessarias*/
-int quickTurn(int ini, int end) {
-	int i, j;
-	for(i = ini, j = 0; i != end; i = (i+1)%6, j++)
-		if (i >= 6) i-= 6;
-	if (j > 3) j = 6-j;
-	return j;
-}
-
-/*Dada uma direcao inicial e uma direcao final, ve
-para qual lado virando eh mais rapido de se chegar*/
-Action fastTurn(int ini, int end) {
-	int dif = end-ini;
-	if((dif <= 3 && dif >= 0) || (dif <= -3))
-		return TURN_RIGHT;
-	else
-		return TURN_LEFT;
-}
 int isControlPoint(Grid *g, Position p) {
 	return (g->map[p.x][p.y].isControlPoint);
 }
-
 /*Dado uma posicao, checa se para alguma direcao
 existe um control point, e retorna qual direcao esta
 o mais perto, contando giradas necessárias*/
@@ -179,36 +179,37 @@ Action andar(Grid *g, Position p, Position robo)
 	Direction ida, volta;
 	int d = 0;
 	pos = getNeighbor(p,d);
-	bloco = g->map[pos->x][pos->y];
-	int cont=0, m->pos-x, n=pos->y;
+	bloco = g->map[pos.x][pos.y];
+	int cont=0, m=pos.x, n=pos.y;
 
 
 	/* checa os vizinhos da casa que vc pretende ir */
-	for(ida=0, volta=0; ida<=5 && volta<=5; ida++, volta++)
+	for(ida = 0, volta = 0; ida <= 5 && volta <= 5; ida++, volta++)
 	{
-		if(bloco->type == "PROJECTILE")
+		if(bloco.type ==  PROJECTILE)
 		{
-			volta=bloco->object->dir;
-			if(volta - ida == 3 || volta-ida==-3)
+			volta = bloco.object.projectile.dir;
+			if(volta - ida == 3 || volta-ida == -3)
 			{
 				linha=pos;
 				while(valid(linha, m, n, g))
 				{
-					if((g->map[pos->x][pos->y])->type == "PROJECTILE") cont++;  //  pos ou linha?
+					if((g->map[pos.x][pos.y]).type == PROJECTILE) cont++;  //  pos ou linha?
 					linha=getNeighbor(linha, ida);
 				}
 
 				robo=getNeighbor(linha,volta);
-				if((g->map[robo.x][robo.y])->object->bullets > cont)
+				if((g->map[robo.x][robo.y]).object.robot.bullets > cont)
 				{
-					if((g->map[robo.x][robo.y])->object->dir ==2) return SHOOT_RIGHT;
-					if((g->map[robo.x][robo.y])->object->dir ==1) return SHOOT_LEFT;
+					if((g->map[robo.x][robo.y]).object.robot.dir ==2) return SHOOT_RIGHT;
+					if((g->map[robo.x][robo.y]).object.robot.dir ==1) return SHOOT_LEFT;
 
 				}
 
 			}
-			return TURN_LEFT;
 		}
+		return WALK;
+
 	}
 }
 
