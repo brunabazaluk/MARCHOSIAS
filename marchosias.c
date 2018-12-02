@@ -384,24 +384,25 @@ void metralhaGeral(Grid *g, Position p, Direction dir)
 
 	pos_inimigo = searchNearestRobot(g, p);
 
-	while do centro
+	while (valid(pos, m, n, g)) {
 		if (getNeighbor(pos, dir)==pos_inimigo)
 			return SHOOT_CENTER;	
 		else pos=getNeighbor(pos, dir);
-		if(!valid(pos, m, n, g)) break;
-
+	}
 	pos=p;
-	while da direita
+	while (valid(pos, m, n, g)) {
 		if (getNeighbor(pos, (dir+1)%6)==pos_inimigo)
 			return SHOOT_RIGHT;
 		else pos=getNeighbor(pos, (dir+1)%6);
 		if(!valid(pos, m, n, g)) break;
+	}
 	pos=p;
-	while da esquerda
+	while (valid(pos, m, n, g)) {
 		if  (getNeighbor(pos, (dir-1)%6)==pos_inimigo)
 			return SHOOT_LEFT;
 		else pos=getNeighbor(pos, (dir-1)%6);
 		if(!valid(pos, m, n, g)) break;
+	}
 }
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
