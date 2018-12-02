@@ -162,7 +162,7 @@ Position searchNearestRobot(Grid *g, Position p) {
     /* Essa função foi bastante inspirada pela função searchNearestControl,
     do controller_basic.c */
 	int i, min = 500, dist;
-    Position best_bot;
+	Position best_bot;
 	for(i = 0; i < 6; i++) {  //  checa na direção de cada lado o hexágono por vez
 		dist = 1;  //  como o ponto de controle
 		Position s = getNeighbor(p,i);
@@ -200,13 +200,6 @@ void prepareGame(Grid *g, Position p, int turnCount){
 	Ponto controlPoints = mapearPontos(g, p, &g->map[p.x][p.y].object.robot);
 
 	Ponto checador = controlPoints;
-
-	// TESTE
-	while(checador != NULL){
-		printf("x: %d, y:%d, dist:%d \n", checador->pos.x, checador->pos.y, checador->dist);
-		checador = checador->prox;
-	}
-	// FIM DO TESTE
 
 	maisProx = controlPoints;
 	Position robo_prox = searchNearestRobot(g, maisProx->pos);
@@ -272,27 +265,27 @@ Action andar(Grid *g, Position p, Position robo)
 Action peregrinar(Grid *g, Position destino, Position inicio, Robot *r){
 	if(destino.y == inicio.y){
 		if(destino.x < inicio.x)
-		if(r->dir == LEFT) return andar(g, getNeighbor(inicio, LEFT), inicio);
-		else return fastTurn(r->dir, LEFT);
+			if(r->dir == LEFT) return andar(g, getNeighbor(inicio, LEFT), inicio);
+			else return fastTurn(r->dir, LEFT);
 		else
-		if(r->dir == RIGHT) return andar(g, getNeighbor(inicio, RIGHT), inicio);
-		else return fastTurn(r->dir, RIGHT);
+			if(r->dir == RIGHT) return andar(g, getNeighbor(inicio, RIGHT), inicio);
+			else return fastTurn(r->dir, RIGHT);
 	}
 	else if(destino.y < inicio.y){
 		if(destino.x < inicio.x || (destino.x == inicio.x && inicio.y % 2 == 1))
-		if(r->dir == TOP_LEFT) return andar(g, getNeighbor(inicio, TOP_LEFT), inicio);
-		else return fastTurn(r->dir, TOP_LEFT);
+			if(r->dir == TOP_LEFT) return andar(g, getNeighbor(inicio, TOP_LEFT), inicio);
+			else return fastTurn(r->dir, TOP_LEFT);
 		else
-		if(r->dir == TOP_RIGHT) return andar(g, getNeighbor(inicio, TOP_RIGHT), inicio);
-		else return fastTurn(r->dir, TOP_RIGHT);
+			if(r->dir == TOP_RIGHT) return andar(g, getNeighbor(inicio, TOP_RIGHT), inicio);
+			else return fastTurn(r->dir, TOP_RIGHT);
 	}
 	else{
 		if(destino.x < inicio.x || (destino.x == inicio.x && inicio.y % 2 == 1))
-		if(r->dir == BOTTOM_LEFT) return andar(g, getNeighbor(inicio, BOTTOM_LEFT), inicio);
-		else return fastTurn(r->dir, BOTTOM_LEFT);
+			if(r->dir == BOTTOM_LEFT) return andar(g, getNeighbor(inicio, BOTTOM_LEFT), inicio);
+			else return fastTurn(r->dir, BOTTOM_LEFT);
 		else
-		if(r->dir == BOTTOM_RIGHT) return andar(g, getNeighbor(inicio, BOTTOM_RIGHT), inicio);
-		else return fastTurn(r->dir, BOTTOM_RIGHT);
+			if(r->dir == BOTTOM_RIGHT) return andar(g, getNeighbor(inicio, BOTTOM_RIGHT), inicio);
+			else return fastTurn(r->dir, BOTTOM_RIGHT);
 	}
 }
 
@@ -379,14 +372,13 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 
 void metralhaGeral(Grid *g, Position p, Direction dir)
 {
-	Tile bloco;
 	Position pos_inimigo,pos=p;
 
 	pos_inimigo = searchNearestRobot(g, p);
 
 	while (valid(pos, m, n, g)) {
 		if (getNeighbor(pos, dir)==pos_inimigo)
-			return SHOOT_CENTER;	
+			return SHOOT_CENTER;
 		else pos=getNeighbor(pos, dir);
 	}
 	pos=p;
@@ -407,6 +399,7 @@ void metralhaGeral(Grid *g, Position p, Direction dir)
 		if(!valid(pos, m, n, g)) break;
 	}
 }
+
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
 	Robot *r = &g->map[p.x][p.y].object.robot;
