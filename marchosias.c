@@ -385,20 +385,20 @@ void metralhaGeral(Grid *g, Position p, Direction dir)
 
 	while do centro
 		if (getNeighbor(pos, dir)==pos_inimigo)
-			ATIRA LA
+			return SHOOT_CENTER;	
 		else pos=getNeighbor(pos, dir);
 		if(!valid(pos, m, n, g)) break;
 
 	pos=p;
 	while da direita
 		if (getNeighbor(pos, (dir+1)%6)==pos_inimigo)
-			ATIRA LA
+			return SHOOT_RIGHT;
 		else pos=getNeighbor(pos, (dir+1)%6);
 		if(!valid(pos, m, n, g)) break;
 	pos=p;
 	while da esquerda
 		if  (getNeighbor(pos, (dir-1)%6)==pos_inimigo)
-			ATIRA LA
+			return SHOOT_LEFT;
 		else pos=getNeighbor(pos, (dir-1)%6);
 		if(!valid(pos, m, n, g)) break;
 }
