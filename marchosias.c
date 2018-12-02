@@ -56,8 +56,27 @@ Action fastTurn(int ini, int end) {
 	return TURN_LEFT;
 }
 
-int distanciaEmTurnos(Grid *g, Position partida, Position chegada, Robot *r){
-	return 0;
+<<<<<<< HEAD
+int distanciaEmTurnos (Grid *g, Posicao partida, Posicao chegada, Robo *r) {
+/*devolve o tempo em turnos necessario para partir a posicao chegada e 
+  ir ate a posicao partida, ignorando possiveis obstaculos*/
+	//Tile mapa[30][30];
+	//for (int i = 0; i < 30; i++) {
+	//	for (int j = 0; j < 30; j++) {
+	//		mapa[i][j] = g->map[i][j];
+	//	}
+	//}
+	Fila f = criaFila ();
+	Position p;
+	int mapa[30][30];
+	for (int i = 0; i < 30; i++) {
+		for (int j = 0; j < 30; j++) {
+			mapa[i][j] = 0;
+		}
+	}
+	p = chegada;
+	insereFila (f, p);
+	
 }
 
 Ponto inserePonto(Ponto lista, Position p, int dist){
@@ -234,6 +253,7 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 				tempo += 1;
 			}
 		}
+		pos = getNeighbor (myPos, d);
 	}
 	return tempo;
 }
