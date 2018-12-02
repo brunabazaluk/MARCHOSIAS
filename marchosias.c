@@ -370,32 +370,37 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 
 Action metralhaGeral(Grid *g, Position p, Direction dir)
 {
-	Position pos_inimigo,pos=p;
+	Position pos_inimigo, pos = p;
 
 	pos_inimigo = searchNearestRobot(g, p);
 
-	while (valid(pos, m, n, g)) {
-		if (getNeighbor(pos, dir)==pos_inimigo)
+	while (valid(pos, g->m, g->n, g)) {
+		if (getNeighbor(pos, dir).x == pos_inimigo.x && getNeighbor(pos, dir).y == pos_inimigo.y)
 			return SHOOT_CENTER;
-		else pos=getNeighbor(pos, dir);
+		else pos = getNeighbor(pos, dir);
+		if(!valid(pos, g->m, g->n, g)) break;
 	}
-	pos=p;
-	while (valid(pos, m, n, g)) {
-		if (getNeighbor(pos, (dir+1)%6)==pos_inimigo)
+	pos = p;
+	while (valid(pos, g->m, g->n, g)) {
+		if (getNeighbor(pos, (dir+1)%6).x == pos_inimigo.x && getNeighbor(pos, (dir+1)%6).y == pos_inimigo.y)
 			return SHOOT_RIGHT;
-		else pos=getNeighbor(pos, (dir+1)%6);
-		if(!valid(pos, m, n, g)) break;
+		else pos = getNeighbor(pos, (dir+1)%6);
+		if(!valid(pos, g->m, g->n, g)) break;
 	}
-	pos=p;
+	pos = p;
 	Direction d;
-	while (valid(pos, m, n, g)) {
-		d= (dir-1)%6;
-		if (d<0) d= -1*d;
-		if  (getNeighbor(pos, d)==pos_inimigo)
+	while (valid(pos, g->m, g->n, g)) {
+		d = dir-1;
+		if (d < 0) d += 6;
+		if  (getNeighbor(pos, d).x == pos_inimigo.x && getNeighbor(pos, d).y == pos_inimigo.y)
 			return SHOOT_LEFT;
-		else pos=getNeighbor(pos, d);
-		if(!valid(pos, m, n, g)) break;
+		else pos = getNeighbor(pos, d);
+		if(!valid(pos, g->m, g->n, g)) break;
 	}
+	int qualquer = rand()%3;
+	if(qualquer == 0 && valid(getNeighbor(p, 0), g->m, g->n, g) return WALK;
+	else if(qualquer == 1) return TURN_LEFT;
+	else return TURN_RIGHT;
 }
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
