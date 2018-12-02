@@ -59,7 +59,6 @@ Action fastTurn(int ini, int end) {
 	return TURN_LEFT;
 }
 
-<<<<<<< HEAD
 int distanciaEmTurnos (Grid *g, Posicao partida, Posicao chegada, Robo *r) {
 /*devolve o tempo em turnos necessario para partir a posicao chegada e 
   ir ate a posicao partida, ignorando possiveis obstaculos*/
@@ -71,15 +70,33 @@ int distanciaEmTurnos (Grid *g, Posicao partida, Posicao chegada, Robo *r) {
 	//}
 	Fila f = criaFila ();
 	Position p;
+	int distancia;
 	int mapa[30][30];
 	for (int i = 0; i < 30; i++) {
 		for (int j = 0; j < 30; j++) {
 			mapa[i][j] = 0;
 		}
 	}
-	p = chegada;
-	insereFila (f, p);
 	
+	p = chegada;
+	mapa[p.x][p.y] = 1;
+	insereFila (f, p);
+	while (!filaVazia (f)) {
+		for (int i = 0; i < 6; i ++) {
+			p = getNeighbor (inicioDaFila->info, i);
+			if (p.x >= 0 && p.x < g->m && p.y >= 0 && p.y < g->n) {
+				if (mapa[p.x][p.y] == 0){
+					mapa[p.x][p.y] = mapa[inicioDaFila->info.x][inicioDaFila->info.y]+1;
+					insereFila(f, p);
+				}
+			}
+		}
+		retiraFila(f);
+	}
+	//distancia em casas, sem considerar rotacao;
+	distancia = mapa[chegada.x][chegada.y] -1;
+	
+	return distancia;
 }
 
 Ponto inserePonto(Ponto lista, Position p, int dist){
