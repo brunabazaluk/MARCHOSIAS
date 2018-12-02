@@ -199,8 +199,6 @@ void prepareGame(Grid *g, Position p, int turnCount){
 	setName("MARCHOSIAS");
 	Ponto controlPoints = mapearPontos(g, p, &g->map[p.x][p.y].object.robot);
 
-	Ponto checador = controlPoints;
-
 	maisProx = controlPoints;
 	Position robo_prox = searchNearestRobot(g, maisProx->pos);
 	while(maisProx != NULL && (p.x != robo_prox.x || p.y != robo_prox.y)){
