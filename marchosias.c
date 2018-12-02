@@ -213,14 +213,28 @@ Action andar(Grid *g, Position p, Position robo)
 	}
 }
 
-Direction taVindoTiro (Grid *g, Position myPos, Direction d) {
-/*retorna se esta vindo projetil da direcao d e o tempo em turnos 
-  q vai levar para o projetil chegar*/
-	Position pos = get
-	if () {
-		while (valid ())
+int taVindoTiro (Grid *g, Position myPos, Direction d) {
+/*verifica se esta vindo projetil da direcao d e o tempo em turnos 
+  q vai levar para o projetil chegar.
+  retorna o tempo em turnos para o projetil chegar caso exista;
+  retorna 0 caso nao haja projeteis vindo
+  */
+
+	Position pos = getNeighbor (myPos, d);
+	int tempo = 0;
+
+	while (pos.x >= 0 && pos.x < g.m && pos.y >= 0 && pos.y < g.n && g->map[pos.x][pos.y].type != ROBOT) {
+		if (g->map[pos.x][pos.y].type == PROJECTILE) {
+			if (g->map[pos.x][pos.y].object.projectile.dir == (d+3)%6) {
+			//direcao oposta a d
+				tempo += 1;
+			}
+		}
 	}
+	return tempo;
 }
+
+
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	int i, j;
