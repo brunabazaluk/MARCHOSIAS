@@ -329,19 +329,28 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 }
 
 
-
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	int i, j;
 	Position s;
 	Robot *r = &g->map[p.x][p.y].object.robot;
 
 	/*Se estiver em cima de um control point, SCORE TIME*/
-	if(isControlPoint(g,p))
-		if (taVindoTiro()) {
-			
+	if(isControlPoint(g,p)) {
+		for (Direction d1 = 0; d1 < 6; d1++) {
+			if (taVindoTiro(g, p, d1)) {
+				if (d1 == ((r->dir)+2)%6 && taVindoTiro == 1) {
+					return OBSTACLE_RIGHT;
+				}
+				else if (d1 == ((r->dir)+3)%6 && taVindoTiro == 1) {
+					return OBSTACLE_CENTER;
+				}
+				else if (d1 == ((r->dir)+4)%6 && taVindoTiro == 1) {
+					return OBSTACLE_LEFT;
+				}
+			}
 		}
 		return STAND;
-
+	}
 	else {
 		/*procura algum control point em alguam direcao do robo*/
 		control_dir = searchNearestControl(g, p, r);
