@@ -443,7 +443,6 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 		}
 	}
 	else {  // MODO DE COMBATE
-		/* PRECISA CODAR ISSO AQUI */
 		return metralhaGeral(g, p, r->dir);
 	}
 }
