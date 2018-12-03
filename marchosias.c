@@ -400,6 +400,13 @@ Action metralhaGeral(Grid *g, Position p, Direction dir)
 	if(valid(getNeighbor(p, dir), g->m, g->n, g)) return WALK;
 	return TURN_LEFT;
 }
+int temGenteAqui (Grid *g, Position myPos, Direction d) {
+	if (g->map[getNeighbor (myPos, d).x][getNeighbor (myPos, d).y].type == ROBOT) {
+		return 1;
+	}
+	return 0;
+}
+
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
@@ -408,8 +415,25 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 	if(marchosias_modo == 1){ // MODO DE CONTROLE
 		/* SE ESTIVER NO PONTO DE CONTROLE */
 		if(isControlPoint(g,p)) {
+			//verifica as 6 casas vizinhas
 			for (int d1 = 0; d1 < 6; d1++) {
-				if (taVindoTiro(g, p, d1)) {
+				
+				//verifica se tem algum robo ao redor
+				if (temGenteAqui (g, p, d1)) {
+					if (d1 == ((r->dir)+1)%6) {
+						return SHOOT_CENTER;
+					}
+					if (d1 == (r->dir)%6) {
+						return SHOOT_CENTER;
+					}
+					if (d1 == ((r->dir)+5)%6) {
+						return SHOOT_LEFT;
+					}
+				}
+			}
+			for (int d1 = 0; d1 < 6; d1++) {
+				//verifica se tem tiros chegando ao redor
+				if (taVindoTiro (g, p, d1)) {
 					if (d1 == ((r->dir)+2)%6 && taVindoTiro(g, p, d1) == 1) {
 						return OBSTACLE_RIGHT;
 					}
