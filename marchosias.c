@@ -377,10 +377,12 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 }
 
 int inimigoAFrente(Grid *g, Position p, Direction dir){
+	printf("entrou\n");
 	while (p.x >= 0 && p.x < g->m && p.y >= 0 && p.y < g->n){
-		if(g->map[getNeighbor(p, dir).x][getNeighbor(p, dir).y].type == ROBOT) return 1;
+		if(valid(getNeighbor(p, dir), g->m, g->n, g) && g->map[getNeighbor(p, dir).x][getNeighbor(p, dir).y].type == ROBOT) return 1;
 		p = getNeighbor(p, dir);
 	}
+	printf("saiu\n");
 	return 0;
 }
 
@@ -433,7 +435,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 					}
 					if (d1 == ((r->dir)+2)%6) {
 						return TURN_RIGHT;
-					}	
+					}
 					if (d1 == ((r->dir)+3)%6) {
 						return WALK;
 					}
@@ -469,9 +471,9 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 		}
 		else{
 			/*
-			
+
 			FUNÇÃO PARA ANDAR ATÉ LÁ (USANDO A FUNÇÃO "andar" DA BRUNA)
-			
+
 			*/
 			Position destino =  maisProx->pos;
 			return peregrinar(g, destino, p, r);
