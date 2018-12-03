@@ -376,37 +376,29 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	return tempo;
 }
 
+int inimigoAFrente(Grid *g, Position p, Direction dir){
+	while (p.x >= 0 && p.x < g->m && p.y >= 0 && p.y < g->n){
+		if(g->map[getNeighbor(p, dir).x][getNeighbor(p, dir).y].type == ROBOT) return 1;
+		p = getNeighbor(p, dir);
+	}
+	return 0;
+}
+
 Action metralhaGeral(Grid *g, Position p, Direction dir)
 {
-	Position pos_inimigo, pos = p;
+	Direction d = dir;
+	if (inimigoAFrente(g, p, d)) return SHOOT_CENTER;
+	d = (dir+1)%6;
+	if (inimigoAFrente(g, p, d)) return SHOOT_RIGHT;
+	d = (dir-1); if (d < 0) d += 6;
+	if (inimigoAFrente(g, p, d)) return SHOOT_LEFT;
+	d = (dir-2); if (d < 0) d += 6;
+	if (inimigoAFrente(g, p, d)) return TURN_LEFT;
+	// cobre o caso que estiver atrás tbm
+	if (inimigoAFrente(g, p, d)) return TURN_RIGHT;
 
-	pos_inimigo = searchNearestRobot(g, p);
-
-	while (valid(pos, g->m, g->n, g)) {
-		if (getNeighbor(pos, dir).x == pos_inimigo.x && getNeighbor(pos, dir).y == pos_inimigo.y)
-			return SHOOT_CENTER;
-		else pos = getNeighbor(pos, dir);
-		if(!valid(pos, g->m, g->n, g)) break;
-	}
-	pos = p;
-	while (valid(pos, g->m, g->n, g)) {
-		if (getNeighbor(pos, (dir+1)%6).x == pos_inimigo.x && getNeighbor(pos, (dir+1)%6).y == pos_inimigo.y)
-			return SHOOT_RIGHT;
-		else pos = getNeighbor(pos, (dir+1)%6);
-		if(!valid(pos, g->m, g->n, g)) break;
-	}
-	pos = p;
-	Direction d;
-	while (valid(pos, g->m, g->n, g)) {
-		d = dir-1;
-		if (d < 0) d += 6;
-		if  (getNeighbor(pos, d).x == pos_inimigo.x && getNeighbor(pos, d).y == pos_inimigo.y)
-			return SHOOT_LEFT;
-		else pos = getNeighbor(pos, d);
-		if(!valid(pos, g->m, g->n, g)) break;
-	}
 	if(valid(getNeighbor(p, dir), g->m, g->n, g)) return WALK;
-	else return TURN_RIGHT;
+	return TURN_LEFT;
 }
 int temGenteAqui (Grid *g, Position myPos, Direction d) {
 	if (g->map[getNeighbor (myPos, d).x][getNeighbor (myPos, d).y].type == ROBOT) {
