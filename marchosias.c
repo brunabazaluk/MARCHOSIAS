@@ -360,18 +360,18 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	retorna 0 caso nao haja projeteis vindo
 	*/
 	Position pos = getNeighbor (myPos, d);
-	int tempo = 0;
+	int tempo = 0, i = 1;
 	int oposta = d - 3;
 	if(oposta < 0) oposta += 6;
 
-	while ((pos.x >= 0 && pos.x < g->m && pos.y >= 0 && pos.y < g->n) && g->map[pos.x][pos.y].type != ROBOT) {
+	while ((pos.x >= 0 && pos.x < g->m && pos.y >= 0 && pos.y < g->n) && g->map[pos.x][pos.y].type != ROBOT && g->map[pos.x][pos.y].type != BLOCK && tempo == 0) {
 		if (g->map[pos.x][pos.y].type == PROJECTILE) {
 			if (g->map[pos.x][pos.y].object.projectile.dir == oposta) {
-			//direcao oposta a d
-				tempo++;
+				tempo = i;
 			}
 		}
 		pos = getNeighbor (pos, d);
+		i++;
 	}
 	return tempo;
 }
@@ -431,6 +431,15 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 					if (d1 == ((r->dir)+5)%6) {
 						return SHOOT_LEFT;
 					}
+					if (d1 == ((r->dir)+2)%6) {
+						return TURN_RIGHT;
+					}	
+					if (d1 == ((r->dir)+3)%6) {
+						return WALK;
+					}
+					if (d1 == ((r->dir)+4)%6) {
+						return TURN_LEFT;
+					}
 				}
 			}
 			for (int d1 = 0; d1 < 6; d1++) {
@@ -445,13 +454,13 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 					else if (d1 == (r->dir+4)%6 && taVindoTiro(g, p, d1) == 1) {
 						return OBSTACLE_LEFT;
 					}
-					else if (d1 == r->dir && taVindoTiro(g, p, d1) == 1) {
+					else if (d1 == r->dir && (taVindoTiro(g, p, d1) == 1 || taVindoTiro(g, p, d1) == 2)) {
 						return SHOOT_CENTER;
 					}
-					else if (d1 == (r->dir+1)%6 && taVindoTiro(g, p, d1) == 1) {
+					else if (d1 == (r->dir+1)%6 && (taVindoTiro(g, p, d1) == 1 || taVindoTiro(g, p, d1) == 2)) {
 						return SHOOT_RIGHT;
 					}
-					else if (d1 == (r->dir+5)%6 && taVindoTiro(g, p, d1) == 1) {
+					else if (d1 == (r->dir+5)%6 && (taVindoTiro(g, p, d1) == 1 || taVindoTiro (g,p,d1) == 2))  {
 						return SHOOT_LEFT;
 					}
 				}
@@ -460,9 +469,9 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 		}
 		else{
 			/*
-
+			
 			FUNÇÃO PARA ANDAR ATÉ LÁ (USANDO A FUNÇÃO "andar" DA BRUNA)
-
+			
 			*/
 			Position destino =  maisProx->pos;
 			return peregrinar(g, destino, p, r);
