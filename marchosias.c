@@ -376,14 +376,38 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 	return tempo;
 }
 
-int inimigoAFrente(Grid *g, Position p, Direction dir){
+/*int inimigoAFrente(Grid *g, Position p, Direction dir){
 	printf("entrou\n");
+	p = getNeighbor(p, dir);
 	while (p.x >= 0 && p.x < g->m && p.y >= 0 && p.y < g->n){
-		if(valid(getNeighbor(p, dir), g->m, g->n, g) && g->map[getNeighbor(p, dir).x][getNeighbor(p, dir).y].type == ROBOT) return 1;
+		if(g->map[p.x][p.y].type == ROBOT) return 1;
 		p = getNeighbor(p, dir);
 	}
 	printf("saiu\n");
 	return 0;
+}*/
+int inimigoAFrente (Grid *g, Position myPos, Direction d) {
+	/*
+	verifica se esta vindo um jogador da direcao d e a distancia da
+	posicao atual.
+	retorna a distancia ate o jogador caso exista.
+	retorna 0 caso nao haja jogador na direcao
+	*/
+	Position pos = getNeighbor (myPos, d);
+	int tempo = 0, i = 1;
+	int oposta = d - 3;
+	if(oposta < 0) oposta += 6;
+
+	while ((pos.x >= 0 && pos.x < g->m && pos.y >= 0 && pos.y < g->n) && g->map[pos.x][pos.y].type != ROBOT && g->map[pos.x][pos.y].type != BLOCK && tempo == 0) {
+		if (g->map[pos.x][pos.y].type == ROBOT) {
+			if (g->map[pos.x][pos.y].object.projectile.dir == oposta) {
+				tempo = i;
+			}
+		}
+		pos = getNeighbor (pos, d);
+		i++;
+	}
+	return tempo;
 }
 
 Action metralhaGeral(Grid *g, Position p, Direction dir)
