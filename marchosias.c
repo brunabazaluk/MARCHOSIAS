@@ -377,12 +377,11 @@ int taVindoTiro (Grid *g, Position myPos, Direction d) {
 }
 
 int inimigoAFrente(Grid *g, Position p, Direction dir){
-	printf("entrou\n");
+	p = getNeighbor(p, dir);
 	while (p.x >= 0 && p.x < g->m && p.y >= 0 && p.y < g->n){
-		if(valid(getNeighbor(p, dir), g->m, g->n, g) && g->map[getNeighbor(p, dir).x][getNeighbor(p, dir).y].type == ROBOT) return 1;
+		if(g->map[p.x][p.y].type == ROBOT) return 1;
 		p = getNeighbor(p, dir);
 	}
-	printf("saiu\n");
 	return 0;
 }
 
@@ -396,11 +395,18 @@ Action metralhaGeral(Grid *g, Position p, Direction dir)
 	if (inimigoAFrente(g, p, d)) return SHOOT_LEFT;
 	d = (dir-2); if (d < 0) d += 6;
 	if (inimigoAFrente(g, p, d)) return TURN_LEFT;
-	// cobre o caso que estiver atrás tbm
+	d = (dir+2)%6;
 	if (inimigoAFrente(g, p, d)) return TURN_RIGHT;
 
 	if(valid(getNeighbor(p, dir), g->m, g->n, g)) return WALK;
 	return TURN_LEFT;
+}
+
+Action metralhaDoido(){
+	int qualquer = rand()%3;
+	if(qualquer == 0) return SHOOT_CENTER;
+	else if(qualquer == 1) return SHOOT_LEFT;
+	else return SHOOT_RIGHT;
 }
 
 int temGenteAqui (Grid *g, Position myPos, Direction d) {
@@ -413,7 +419,6 @@ int temGenteAqui (Grid *g, Position myPos, Direction d) {
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
-	int bla = scanf("%d\n", &bla);
 	Robot *r = &g->map[p.x][p.y].object.robot;
 
 	if(marchosias_modo == 1){ // MODO DE CONTROLE
@@ -484,6 +489,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 			marchosias_modo = 1;
 			return STAND;
 		}
-		return metralhaGeral(g, p, r->dir);
+		return metralhaDoido();
+		//return metralhaGeral(g, p, r->dir);
 	}
 }
