@@ -215,7 +215,7 @@ void prepareGame(Grid *g, Position p, int turnCount){
 		robo_prox = searchNearestRobot(g, maisProx->pos);
 	}
 	if(maisProx == NULL) marchosias_modo = 0; // MODO DE COMBATE
-	else marchosias_modo = 1; // MODO DE CONTROLE
+	else marchosias_modo = 0; // MODO DE CONTROLE
 }
 
 
@@ -224,7 +224,7 @@ caso um tiro estiver na msm posicao q vc pretende ir na prox rodada
 a funcao checa se a quantidade de tiros na sua direcao eh menor que
 a qtdade de bullets q marchosias tem, se sim, ele atira; se nao, ele
 ele vira para mudar de casa na rodada seguinte */
-Action andar(Grid *g, Position p, Position robo)
+Action andar(Grid *g, Position p, Position robo, Direction dir)
 {
 	Tile bloco;
 	Position pos, linha;
@@ -271,26 +271,26 @@ Action andar(Grid *g, Position p, Position robo)
 Action peregrinar(Grid *g, Position destino, Position inicio, Robot *r){
 	if(destino.y == inicio.y){
 		if(destino.x < inicio.x)
-			if(r->dir == LEFT) return andar(g, getNeighbor(inicio, LEFT), inicio);
+			if(r->dir == LEFT) return andar(g, getNeighbor(inicio, LEFT), inicio, r->dir);
 			else return fastTurn(r->dir, LEFT);
 		else
-			if(r->dir == RIGHT) return andar(g, getNeighbor(inicio, RIGHT), inicio);
+			if(r->dir == RIGHT) return andar(g, getNeighbor(inicio, RIGHT), inicio, r->dir);
 			else return fastTurn(r->dir, RIGHT);
 	}
 	else if(destino.y < inicio.y){
 		if(destino.x < inicio.x || (destino.x == inicio.x && inicio.y % 2 == 1))
-			if(r->dir == TOP_LEFT) return andar(g, getNeighbor(inicio, TOP_LEFT), inicio);
+			if(r->dir == TOP_LEFT) return andar(g, getNeighbor(inicio, TOP_LEFT), inicio, r->dir);
 			else return fastTurn(r->dir, TOP_LEFT);
 		else
-			if(r->dir == TOP_RIGHT) return andar(g, getNeighbor(inicio, TOP_RIGHT), inicio);
+			if(r->dir == TOP_RIGHT) return andar(g, getNeighbor(inicio, TOP_RIGHT), inicio, r->dir);
 			else return fastTurn(r->dir, TOP_RIGHT);
 	}
 	else{
 		if(destino.x < inicio.x || (destino.x == inicio.x && inicio.y % 2 == 1))
-			if(r->dir == BOTTOM_LEFT) return andar(g, getNeighbor(inicio, BOTTOM_LEFT), inicio);
+			if(r->dir == BOTTOM_LEFT) return andar(g, getNeighbor(inicio, BOTTOM_LEFT), inicio, r->dir);
 			else return fastTurn(r->dir, BOTTOM_LEFT);
 		else
-			if(r->dir == BOTTOM_RIGHT) return andar(g, getNeighbor(inicio, BOTTOM_RIGHT), inicio);
+			if(r->dir == BOTTOM_RIGHT) return andar(g, getNeighbor(inicio, BOTTOM_RIGHT), inicio, r->dir);
 			else return fastTurn(r->dir, BOTTOM_RIGHT);
 	}
 }
@@ -400,6 +400,7 @@ Action metralhaGeral(Grid *g, Position p, Direction dir)
 	if(valid(getNeighbor(p, dir), g->m, g->n, g)) return WALK;
 	return TURN_LEFT;
 }
+
 int temGenteAqui (Grid *g, Position myPos, Direction d) {
 	if (g->map[getNeighbor (myPos, d).x][getNeighbor (myPos, d).y].type == ROBOT) {
 		return 1;
@@ -410,6 +411,7 @@ int temGenteAqui (Grid *g, Position myPos, Direction d) {
 
 Action processTurn(Grid *g, Position p, int turnsLeft) {
 	printf("%d\n", marchosias_modo);
+	int bla = scanf("%d\n", &bla);
 	Robot *r = &g->map[p.x][p.y].object.robot;
 
 	if(marchosias_modo == 1){ // MODO DE CONTROLE
@@ -417,7 +419,7 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 		if(isControlPoint(g,p)) {
 			//verifica as 6 casas vizinhas
 			for (int d1 = 0; d1 < 6; d1++) {
-				
+
 				//verifica se tem algum robo ao redor
 				if (temGenteAqui (g, p, d1)) {
 					if (d1 == ((r->dir)+1)%6) {
@@ -462,11 +464,15 @@ Action processTurn(Grid *g, Position p, int turnsLeft) {
 			FUNÇÃO PARA ANDAR ATÉ LÁ (USANDO A FUNÇÃO "andar" DA BRUNA)
 
 			*/
-			Position destino = maisProx->pos;
+			Position destino =  maisProx->pos;
 			return peregrinar(g, destino, p, r);
 		}
 	}
 	else {  // MODO DE COMBATE
+		if(isControlPoint(g,p) || r->bullets == 0){
+			marchosias_modo = 1;
+			return STAND;
+		}
 		return metralhaGeral(g, p, r->dir);
 	}
 }
